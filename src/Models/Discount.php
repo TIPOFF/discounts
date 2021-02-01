@@ -50,7 +50,7 @@ class Discount extends Model
             'code' => new DiscountCode(),
             'amount' => 'required_without:percent',
             'percent' => 'required_without:amount',
-            'max_usage' => 'required|integer|min:1'
+            'max_usage' => 'required|integer|min:1',
         ];
     }
 

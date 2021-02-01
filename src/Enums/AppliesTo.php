@@ -16,9 +16,9 @@ use MabeEnum\Enum;
  */
 class AppliesTo extends Enum
 {
-    const ORDER   = 'order';
-    const PARTICIPANT  = 'participant';
-    const SINGLE_PARTICIPANT  = 'single_participant';
+    const ORDER = 'order';
+    const PARTICIPANT = 'participant';
+    const SINGLE_PARTICIPANT = 'single_participant';
     const BOOKING = 'booking';
     const PRODUCT = 'product';
     const BOOKING_AND_PRODUCT = 'each';
