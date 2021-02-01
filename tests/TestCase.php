@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tipoff\Discounts\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -19,13 +21,6 @@ class TestCase extends Orchestra
 
     protected function getPackageProviders($app)
     {
-        return [
-            DiscountsServiceProvider::class,
-        ];
-    }
-
-    public function getEnvironmentSetUp($app)
-    {
         $app['config']->set('database.default', 'sqlite');
         $app['config']->set('database.connections.sqlite', [
             'driver' => 'sqlite',
@@ -33,9 +28,14 @@ class TestCase extends Orchestra
             'prefix' => '',
         ]);
 
-        /*
+        return [
+            DiscountsServiceProvider::class,
+        ];
+    }
+
+    public function getEnvironmentSetUp($app)
+    {
         include_once __DIR__.'/../database/migrations/create_discounts_table.php.stub';
-        (new \CreatePackageTable())->up();
-        */
+        (new \CreateDiscountsTable())->up();
     }
 }
