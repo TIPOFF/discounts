@@ -29,12 +29,10 @@ class CreateDiscountsTable extends Migration
             $table->date('expires_at')->nullable();
 
             $userModel = config('discounts.model.user');
-            if (class_exists($userModel)) {
-                $userTable = (new $userModel)->getTable();
+            $userTable = (new $userModel)->getTable();
 
-                $table->foreignId('creator_id')->references('id')->on($userTable);
-                $table->foreignId('updater_id')->references('id')->on($userTable);
-            }
+            $table->foreignId('creator_id')->references('id')->on($userTable);
+            $table->foreignId('updater_id')->references('id')->on($userTable);
             $table->timestamps();
         });
     }
