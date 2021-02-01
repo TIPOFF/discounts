@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tipoff\Discounts;
 
+use Illuminate\Support\Facades\Schema;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Tipoff\Discounts\Commands\DiscountsCommand;
-use Illuminate\Support\Facades\Schema;
 
 class DiscountsServiceProvider extends PackageServiceProvider
 {
@@ -25,7 +25,7 @@ class DiscountsServiceProvider extends PackageServiceProvider
             ->hasTranslations()
             ->hasCommand(DiscountsCommand::class);
 
-        if (!Schema::hasTable('discounts')) {
+        if (! Schema::hasTable('discounts')) {
             $package->hasMigration('create_discounts_table');
         }
     }
