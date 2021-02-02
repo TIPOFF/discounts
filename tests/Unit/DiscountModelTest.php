@@ -58,7 +58,7 @@ class DiscountModelTest extends TestCase
     {
         $creator = User::factory()->create();
         $discount = Discount::factory()->create([
-            'code'       => 'ABCD',
+            'code' => 'ABCD',
             'creator_id' => $creator,
             'updater_id' => $creator,
         ]);
@@ -165,7 +165,7 @@ class DiscountModelTest extends TestCase
         $this->expectExceptionMessage('code: Value "9" was not expected to be equal to value "9"');
 
         Discount::factory()->create([
-            'code' => '123456789'
+            'code' => '123456789',
         ]);
     }
 

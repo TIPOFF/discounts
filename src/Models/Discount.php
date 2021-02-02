@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tipoff\Discounts\Models;
 
 use Assert\Assert;
-use Assert\Assertion;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
