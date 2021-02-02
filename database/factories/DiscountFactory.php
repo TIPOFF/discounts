@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tipoff\Discounts\Database\Factories;
 
+use Brick\Money\Money;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Tipoff\Discounts\Enums\AppliesTo;
 use Tipoff\Discounts\Models\Discount;
@@ -25,7 +26,7 @@ class DiscountFactory extends Factory
     public function definition()
     {
         if ($this->faker->boolean) {
-            $amount = $this->faker->numberBetween(100, 1000);
+            $amount = Money::ofMinor($this->faker->numberBetween(100, 1000), 'USD');
             $percent = null;
         } else {
             $amount = null;
@@ -37,12 +38,43 @@ class DiscountFactory extends Factory
             'code'          => $this->faker->md5,
             'amount'        => $amount,
             'percent'       => $percent,
-            'applies_to'    => $this->faker->randomElement(AppliesTo::getConstants()),
+            'applies_to'    => $this->faker->randomElement(AppliesTo::getEnumerators()),
             'max_usage'     => $this->faker->randomElement([1, 1, 1, 1, 5, 100, 1000]),
             'auto_apply'    => $this->faker->boolean,
             'expires_at'    => $this->faker->dateTimeBetween($startDate = '-1 months', $endDate = '+3 years', $timezone = null),
-            'creator_id'    => randomOrCreate(config('discounts.model.user')),
-            'updater_id'    => randomOrCreate(config('discounts.model.user')),
+            'creator_id'    => randomOrCreate(config('discounts.model_class.user')),
+            'updater_id'    => randomOrCreate(config('discounts.model_class.user')),
         ];
+    }
+
+    public function percent(): self
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'amount'  => null,
+                'percent' => $this->faker->numberBetween(1, 50),
+            ];
+        });
+    }
+
+    public function amount(): self
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'amount'  => Money::ofMinor($this->faker->numberBetween(100, 1000), 'USD'),
+                'percent' => null,
+            ];
+        });
+    }
+
+    public function expired(bool $isExpired = true): self
+    {
+        return $this->state(function (array $attributes) use ($isExpired) {
+            return [
+                'expires_at' => $isExpired
+                    ? $this->faker->dateTimeBetween($startDate = '-2 months', $endDate = '-1 month', $timezone = null)
+                    : $this->faker->dateTimeBetween($startDate = '1 month', $endDate = '2 months', $timezone = null),
+            ];
+        });
     }
 }

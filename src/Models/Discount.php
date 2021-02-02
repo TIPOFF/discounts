@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Tipoff\Discounts\Models;
 
+use Assert\Assert;
+use Assert\Assertion;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Validator;
-use Tipoff\Discounts\Exceptions\ValidationException;
-use Tipoff\Discounts\Rules\DiscountCode;
+use Tipoff\Discounts\Enums\AppliesTo;
+use Tipoff\Support\Casts\Enum;
+use Tipoff\Support\Casts\Money;
 
 class Discount extends Model
 {
@@ -18,6 +20,13 @@ class Discount extends Model
 
     protected $guarded = ['id'];
     protected $casts = [
+        'name' => 'string',
+        'code' => 'string', // TODO - use custom class to represent DiscountCode?
+        'amount' => Money::class,
+        'percent' => 'float',
+        'applies_to' => Enum::class.':'.AppliesTo::class,
+        'max_usage' => 'integer',
+        'auto_apply' => 'boolean',
         'expires_at' => 'datetime',
     ];
 
@@ -26,46 +35,28 @@ class Discount extends Model
         parent::boot();
 
         static::creating(function (Discount $discount) {
+            // TODO - refactor into Auditable trait?
             if (auth()->check()) {
                 $discount->creator_id = auth()->id();
             }
         });
 
         static::saving(function (Discount $discount) {
-            $discount->code = strtoupper($discount->code);
+            // TODO - refactor into Auditable trait?
             if (auth()->check()) {
                 $discount->updater_id = auth()->id();
             }
+            $discount->code = strtoupper($discount->code);
             if (empty($discount->max_usage)) {
                 $discount->max_usage = 1;
             }
 
-            $discount->validate();
+            Assert::lazy()
+                ->that(strlen($discount->code), 'code')->notEq(9)
+                ->that(empty($discount->amount) && empty($discount->percent), 'amount')->false('A discount must have either an amount or percent.')
+                ->that(! empty($discount->amount) && ! empty($discount->percent), 'amount')->false('A discount cannot have both an amount & percent.')
+                ->verifyNow();
         });
-    }
-
-    protected function rules(): array
-    {
-        return [
-            'code' => new DiscountCode(),
-            'amount' => 'required_without:percent',
-            'percent' => 'required_without:amount',
-            'max_usage' => 'required|integer|min:1',
-        ];
-    }
-
-    protected function validate(): void
-    {
-        $v = Validator::make([
-            'code' => $this->code,
-            'amount' => $this->amount,
-            'percent' => $this->percent,
-            'max_usage' => $this->max_usage,
-        ], $this->rules());
-
-        if ($v->fails()) {
-            throw new ValidationException($v);
-        }
     }
 
     /**
@@ -102,21 +93,21 @@ class Discount extends Model
 
     public function carts()
     {
-        return $this->belongsToMany(config('discounts.cart.model'))->withTimestamps();
+        return $this->belongsToMany(config('discounts.model_class.cart'))->withTimestamps();
     }
 
     public function orders()
     {
-        return $this->belongsToMany(config('discounts.order.model'));
+        return $this->belongsToMany(config('discounts.model_class.order'));
     }
 
     public function creator()
     {
-        return $this->belongsTo(config('discounts.user.model'), 'creator_id');
+        return $this->belongsTo(config('discounts.model_class.user'), 'creator_id');
     }
 
     public function updater()
     {
-        return $this->belongsTo(config('discounts.user.model'), 'updater_id');
+        return $this->belongsTo(config('discounts.model_class.user'), 'updater_id');
     }
 }

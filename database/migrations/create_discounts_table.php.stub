@@ -28,7 +28,8 @@ class CreateDiscountsTable extends Migration
             $table->boolean('auto_apply')->default(false)->index(); // Some discounts (weekday games, multiple bookings in order) will be automatically applied during checkout process.
             $table->date('expires_at')->nullable();
 
-            $userModel = config('discounts.model.user');
+            // TODO - refactor
+            $userModel = config('discounts.model_class.user');
             $userTable = (new $userModel)->getTable();
 
             $table->foreignId('creator_id')->references('id')->on($userTable);

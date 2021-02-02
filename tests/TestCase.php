@@ -10,6 +10,7 @@ use Tipoff\Discounts\DiscountsServiceProvider;
 use Tipoff\Discounts\Tests\Models\Cart;
 use Tipoff\Discounts\Tests\Models\Order;
 use Tipoff\Discounts\Tests\Models\User;
+use Tipoff\Discounts\Tests\Support\NovaServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -33,12 +34,13 @@ class TestCase extends Orchestra
 
         return [
             DiscountsServiceProvider::class,
+            NovaServiceProvider::class,
         ];
     }
 
     public function getEnvironmentSetUp($app)
     {
-        $app['config']->set('discounts.model', [
+        $app['config']->set('discounts.model_class', [
             'user' => User::class,
             'cart' => Cart::class,
             'order' => Order::class,
@@ -52,6 +54,10 @@ class TestCase extends Orchestra
         (new \CreateOrdersTable())->up();
 
         include_once __DIR__.'/../database/migrations/create_discounts_table.php.stub';
+        include_once __DIR__.'/../database/migrations/create_discount_order_table.php.stub';
+        include_once __DIR__.'/../database/migrations/create_cart_discount_pivot_table.php.stub';
         (new \CreateDiscountsTable())->up();
+        (new \CreateDiscountOrderTable())->up();
+        (new \CreateCartDiscountPivotTable())->up();
     }
 }

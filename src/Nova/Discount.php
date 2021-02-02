@@ -17,7 +17,10 @@ use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
+use Tipoff\Discounts\Enums\AppliesTo;
+use Tipoff\Discounts\Rules\DiscountCode;
 use Tipoff\Support\Nova\Resource;
+use Tipoff\Support\Rules\Enum;
 
 class Discount extends Resource
 {
@@ -49,7 +52,8 @@ class Discount extends Resource
     {
         return [
             Text::make('Name'),
-            Text::make('Code'),
+            Text::make('Code')
+                ->rules(new DiscountCode()),
             Currency::make('Amount')->asMinorUnits()
                 ->step('0.01')
                 ->resolveUsing(function ($value) {
@@ -58,12 +62,20 @@ class Discount extends Resource
                 ->fillUsing(function ($request, $model, $attribute) {
                     $model->$attribute = $request->$attribute * 100;
                 })
+                ->rules('required_without:percent')
                 ->nullable(),
-            Number::make('Percent')->nullable(),
-            Select::make('Applies To')->options(
-                config('discounts.applications')
-            )->required(),
-            Number::make('Max Usage')->nullable(),
+            Number::make('Percent')
+                ->rules('required_without:amount')
+                ->nullable(),
+            Select::make('Applies To')
+                ->options(
+                    config('discounts.applications')
+                )
+                ->rules(new Enum(AppliesTo::class))
+                ->required(),
+            Number::make('Max Usage')
+                ->rules('integer', 'min:1')
+                ->nullable(),
             Boolean::make('Auto Apply'),
             Date::make('Expires At', 'expires_at')->nullable(),
 
@@ -77,9 +89,9 @@ class Discount extends Resource
     {
         return [
             ID::make(),
-            BelongsTo::make('Created By', 'creator', config('discounts.nova.user'))->exceptOnForms(),
+            BelongsTo::make('Created By', 'creator', config('discounts.nova_class.user'))->exceptOnForms(),
             DateTime::make('Created At')->exceptOnForms(),
-            BelongsTo::make('Updated By', 'updater', config('discounts.nova.user'))->exceptOnForms(),
+            BelongsTo::make('Updated By', 'updater', config('discounts.nova_class.user'))->exceptOnForms(),
             DateTime::make('Updated At')->exceptOnForms(),
         ];
     }

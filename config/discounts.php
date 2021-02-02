@@ -4,13 +4,13 @@ use Tipoff\Discounts\Enums\AppliesTo;
 
 return [
 
-    'model' => [
-        'user' => \App\User::class,
-        'order' => \App\Order::class,
-        'cart' => \App\Cart::class,
+    'model_class' => [
+        'user' => \App\Models\User::class,
+        'order' => \App\Models\Order::class,
+        'cart' => \App\Models\Cart::class,
     ],
 
-    'nova' => [
+    'nova_class' => [
         'user' => \App\Nova\User::class,
     ],
 

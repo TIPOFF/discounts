@@ -28,5 +28,11 @@ class DiscountsServiceProvider extends PackageServiceProvider
         if (! Schema::hasTable('discounts')) {
             $package->hasMigration('create_discounts_table');
         }
+        if (! Schema::hasTable('discount_order')) {
+            $package->hasMigration('create_discount_order_table');
+        }
+        if (! Schema::hasTable('cart_discount')) {
+            $package->hasMigration('create_cart_discount_pivot_table');
+        }
     }
 }
