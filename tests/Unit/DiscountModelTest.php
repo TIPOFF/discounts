@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tipoff\Discounts\Tests\Unit;
 
 use Assert\LazyAssertionException;
-use Brick\Money\Money;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -188,7 +187,7 @@ class DiscountModelTest extends TestCase
         $this->expectExceptionMessage('amount: A discount cannot have both an amount & percent.');
 
         Discount::factory()->create([
-            'amount' => Money::ofMinor(1000, 'USD'),
+            'amount' => 1000,
             'percent' => 0.12,
         ]);
     }
