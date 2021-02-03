@@ -49,6 +49,7 @@ class DiscountsServiceImplementation implements DiscountsService
             // Check for supported discount type
             if (in_array($discount->applies_to->getValue(), array_keys(config('discounts.applications')))) {
                 $discount->carts()->syncWithoutDetaching([$cart->getId()]);
+
                 return true;
             }
         }
@@ -67,9 +68,11 @@ class DiscountsServiceImplementation implements DiscountsService
                 switch ($discount->applies_to) {
                     case AppliesTo::ORDER():
                         $total = $total->plus($amount);
+
                         break;
                     case AppliesTo::PARTICIPANT():
                         $total = $total->plus($amount->multipliedBy($cart->getTotalParticipants()));
+
                         break;
                 }
             }

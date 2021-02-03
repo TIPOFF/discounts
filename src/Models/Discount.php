@@ -15,11 +15,11 @@ use Tipoff\Support\Models\BaseModel;
 /**
  * @property string name
  * @property string code
- * @property integer amount
+ * @property int amount
  * @property float percent
  * @property AppliesTo applies_to
- * @property integer max_usage
- * @property boolean auto_apply
+ * @property int max_usage
+ * @property bool auto_apply
  * @property Carbon expires_at
  */
 class Discount extends BaseModel

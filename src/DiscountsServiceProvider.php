@@ -36,7 +36,7 @@ class DiscountsServiceProvider extends PackageServiceProvider
 
     public function registeringPackage()
     {
-        $this->app->singleton(DiscountsService::class, function() {
+        $this->app->singleton(DiscountsService::class, function () {
             return new DiscountsServiceImplementation();
         });
     }
