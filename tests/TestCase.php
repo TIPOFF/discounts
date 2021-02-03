@@ -25,16 +25,9 @@ class TestCase extends Orchestra
 
     protected function getPackageProviders($app)
     {
-        $app['config']->set('database.default', 'sqlite');
-        $app['config']->set('database.connections.sqlite', [
-            'driver' => 'sqlite',
-            'database' => ':memory:',
-            'prefix' => '',
-        ]);
-
         return [
-            DiscountsServiceProvider::class,
             NovaServiceProvider::class,
+            DiscountsServiceProvider::class,
         ];
     }
 
@@ -46,16 +39,16 @@ class TestCase extends Orchestra
             'order' => Order::class,
         ]);
 
-        include_once __DIR__.'/../database/migrations/test/create_users_table.php.stub';
-        include_once __DIR__.'/../database/migrations/test/create_carts_table.php.stub';
-        include_once __DIR__.'/../database/migrations/test/create_orders_table.php.stub';
+        include_once __DIR__.'/../database/migrations/test/create_users_table.php';
+        include_once __DIR__.'/../database/migrations/test/create_carts_table.php';
+        include_once __DIR__.'/../database/migrations/test/create_orders_table.php';
         (new \CreateUsersTable())->up();
         (new \CreateCartsTable())->up();
         (new \CreateOrdersTable())->up();
 
-        include_once __DIR__.'/../database/migrations/create_discounts_table.php.stub';
-        include_once __DIR__.'/../database/migrations/create_discount_order_table.php.stub';
-        include_once __DIR__.'/../database/migrations/create_cart_discount_pivot_table.php.stub';
+        include_once __DIR__.'/../database/migrations/2020_05_06_110000_create_discounts_table.php';
+        include_once __DIR__.'/../database/migrations/2020_05_06_120000_create_discount_order_table.php';
+        include_once __DIR__.'/../database/migrations/2020_06_30_110000_create_cart_discount_pivot_table.php';
         (new \CreateDiscountsTable())->up();
         (new \CreateDiscountOrderTable())->up();
         (new \CreateCartDiscountPivotTable())->up();

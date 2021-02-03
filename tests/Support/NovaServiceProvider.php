@@ -11,25 +11,13 @@ use Tipoff\Discounts\Nova\Discount;
 
 class NovaServiceProvider extends NovaApplicationServiceProvider
 {
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
+    protected function resources()
     {
-        parent::boot();
-
         Nova::resources([
             Discount::class,
         ]);
     }
 
-    /**
-     * Register the Nova routes.
-     *
-     * @return void
-     */
     protected function routes()
     {
         Nova::routes()

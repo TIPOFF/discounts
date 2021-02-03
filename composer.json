@@ -21,7 +21,7 @@
         "marc-mabe/php-enum": "^4.4",
         "nesbot/carbon": "^2.44",
         "spatie/laravel-package-tools": "^1.1",
-        "tipoff/support": "dev-pdbreen/bugfix/null-casts"
+        "tipoff/support": "dev-main"
     },
     "require-dev": {
         "mockery/mockery": "^1.4",
@@ -62,10 +62,6 @@
         {
             "type": "composer",
             "url": "https://nova.laravel.com"
-        },
-        {
-            "type": "path",
-            "url" : "../support"
         }
     ],
     "minimum-stability": "dev",

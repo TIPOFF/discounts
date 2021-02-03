@@ -5,16 +5,15 @@ declare(strict_types=1);
 namespace Tipoff\Discounts\Models;
 
 use Assert\Assert;
-use Assert\Assertion;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Tipoff\Discounts\Enums\AppliesTo;
 use Tipoff\Support\Casts\Enum;
 use Tipoff\Support\Casts\Money;
+use Tipoff\Support\Models\BaseModel;
 
-class Discount extends Model
+class Discount extends BaseModel
 {
     use HasFactory;
 

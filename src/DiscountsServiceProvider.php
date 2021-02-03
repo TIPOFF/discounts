@@ -11,6 +11,13 @@ use Tipoff\Discounts\Commands\DiscountsCommand;
 
 class DiscountsServiceProvider extends PackageServiceProvider
 {
+    public function boot()
+    {
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+
+        return parent::boot();
+    }
+
     public function configurePackage(Package $package): void
     {
         /*

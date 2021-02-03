@@ -2,15 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Tipoff\Discounts\Tests\Unit;
+namespace Tipoff\Discounts\Tests\Feature\Nova;
 
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tipoff\Discounts\Models\Discount;
-use Tipoff\Discounts\Tests\Models\Cart;
-use Tipoff\Discounts\Tests\Models\Order;
-use Tipoff\Discounts\Tests\Models\User;
+use Illuminate\Routing\Router;
 use Tipoff\Discounts\Tests\TestCase;
 
 class DiscountResourceTest extends TestCase
@@ -20,7 +15,13 @@ class DiscountResourceTest extends TestCase
     /** @test */
     public function create_amount_discount()
     {
-        $json = $this->getJson("nova-api/discounts");
+        $this->markTestSkipped('Still trying to figure out how to get Resource routes registered in the testbench');
+
+        /** @var Router $router */
+        $router = $this->app->make('router');
+        dd($router->getRoutes());
+        // dd($router);
+        $json = $this->getJson("nova/password/reset");
         dump($json);
     }
 }
