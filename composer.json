@@ -21,7 +21,7 @@
         "marc-mabe/php-enum": "^4.4",
         "nesbot/carbon": "^2.44",
         "spatie/laravel-package-tools": "^1.1",
-        "tipoff/support": "dev-main"
+        "tipoff/support": "^1.0.5"
     },
     "require-dev": {
         "mockery/mockery": "^1.4",
@@ -52,10 +52,7 @@
         "laravel": {
             "providers": [
                 "Tipoff\\Discounts\\DiscountsServiceProvider"
-            ],
-            "aliases": {
-                "Discounts": "Tipoff\\Discounts\\DiscountsFacade"
-            }
+            ]
         }
     },
     "repositories": [

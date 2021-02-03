@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tipoff\Discounts\Tests\Unit;
+namespace Tipoff\Discounts\Tests\Unit\Models;
 
 use Assert\LazyAssertionException;
 use Carbon\Carbon;
@@ -137,10 +137,24 @@ class DiscountModelTest extends TestCase
 
         /** @var Cart $order */
         $cart = Cart::factory()->create();
-        $cart->discounts()->sync([$discount->id]);
+        $discount->carts()->sync([$cart->id]);
 
         $discount->refresh();
         $this->assertEquals(1, $discount->carts()->count());
+    }
+
+    public function by_cart_id()
+    {
+        /** @var Discount $discount */
+        $discount = Discount::factory()->create();
+
+        /** @var Cart $order */
+        $cart = Cart::factory()->create();
+        $discount->carts()->sync([$cart->id]);
+
+        $discounts = Discount::query()->byCartId($cart->id)->get();
+
+        $this->assertEquals(1, $discounts);
     }
 
     /** @test */

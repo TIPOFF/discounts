@@ -12,6 +12,16 @@ use Tipoff\Discounts\Enums\AppliesTo;
 use Tipoff\Support\Casts\Enum;
 use Tipoff\Support\Models\BaseModel;
 
+/**
+ * @property string name
+ * @property string code
+ * @property integer amount
+ * @property float percent
+ * @property AppliesTo applies_to
+ * @property integer max_usage
+ * @property boolean auto_apply
+ * @property Carbon expires_at
+ */
 class Discount extends BaseModel
 {
     use HasFactory;
@@ -64,10 +74,17 @@ class Discount extends BaseModel
      * @param string|Carbon $date
      * @return Builder
      */
-    public function scopeValidAt($query, $date)
+    public function scopeValidAt(Builder $query, $date): Builder
     {
         return $query
             ->whereDate('expires_at', '>=', $date);
+    }
+
+    public function scopeByCartId(Builder $query, int $cartId): Builder
+    {
+        return $query->whereHas('carts', function ($q) use ($cartId) {
+            $q->where('id', $cartId);
+        });
     }
 
     /**
@@ -76,7 +93,7 @@ class Discount extends BaseModel
      * @param string|Carbon $date
      * @return bool
      */
-    public function isValidAt($date)
+    public function isValidAt($date): bool
     {
         if (! $date instanceof Carbon) {
             $date = new Carbon($date);
