@@ -53,7 +53,7 @@ class Discount extends Resource
         return [
             Text::make('Name'),
             Text::make('Code')
-                ->rules(new DiscountCode()),
+                ->rules([new DiscountCode()]),
             Currency::make('Amount')->asMinorUnits()
                 ->step('0.01')
                 ->resolveUsing(function ($value) {
@@ -71,7 +71,7 @@ class Discount extends Resource
                 ->options(
                     config('discounts.applications')
                 )
-                ->rules(new Enum(AppliesTo::class))
+                ->rules([new Enum(AppliesTo::class)])
                 ->required(),
             Number::make('Max Usage')
                 ->rules(['integer', 'min:1'])

@@ -13,8 +13,10 @@ use MabeEnum\Enum;
  * @method static AppliesTo BOOKING()
  * @method static AppliesTo PRODUCT()
  * @method static AppliesTo BOOKING_AND_PRODUCT()
+
+ * @psalm-immutable
  */
-final class AppliesTo extends Enum
+class AppliesTo extends Enum
 {
     const ORDER = 'order';
     const PARTICIPANT = 'participant';
