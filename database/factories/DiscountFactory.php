@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tipoff\Discounts\Database\Factories;
 
-use Brick\Money\Money;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Tipoff\Discounts\Enums\AppliesTo;
 use Tipoff\Discounts\Models\Discount;
@@ -26,7 +25,7 @@ class DiscountFactory extends Factory
     public function definition()
     {
         if ($this->faker->boolean) {
-            $amount = Money::ofMinor($this->faker->numberBetween(100, 1000), 'USD');
+            $amount = $this->faker->numberBetween(100, 1000);
             $percent = null;
         } else {
             $amount = null;
@@ -61,7 +60,7 @@ class DiscountFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'amount'  => Money::ofMinor($this->faker->numberBetween(100, 1000), 'USD'),
+                'amount'  => $this->faker->numberBetween(100, 1000),
                 'percent' => null,
             ];
         });

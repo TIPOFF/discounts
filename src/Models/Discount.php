@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Tipoff\Discounts\Enums\AppliesTo;
 use Tipoff\Support\Casts\Enum;
-use Tipoff\Support\Casts\Money;
 use Tipoff\Support\Models\BaseModel;
 
 class Discount extends BaseModel
@@ -21,7 +20,7 @@ class Discount extends BaseModel
     protected $casts = [
         'name' => 'string',
         'code' => 'string', // TODO - use custom class to represent DiscountCode?
-        'amount' => Money::class,
+        'amount' => 'integer',
         'percent' => 'float',
         'applies_to' => Enum::class.':'.AppliesTo::class,
         'max_usage' => 'integer',

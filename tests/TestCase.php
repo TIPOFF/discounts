@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Tipoff\Discounts\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Laravel\Nova\NovaCoreServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Tipoff\Discounts\DiscountsServiceProvider;
-use Tipoff\Discounts\Tests\Models\Cart;
-use Tipoff\Discounts\Tests\Models\Order;
-use Tipoff\Discounts\Tests\Models\User;
-use Tipoff\Discounts\Tests\Support\NovaServiceProvider;
+use Tipoff\Discounts\Tests\Support\Models;
+use Tipoff\Discounts\Tests\Support\Nova;
+use Tipoff\Discounts\Tests\Support\Providers\NovaTestbenchServiceProvider;
+use Tipoff\Support\SupportServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -26,7 +27,9 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
-            NovaServiceProvider::class,
+            NovaCoreServiceProvider::class,
+            NovaTestbenchServiceProvider::class,
+            SupportServiceProvider::class,
             DiscountsServiceProvider::class,
         ];
     }
@@ -34,9 +37,12 @@ class TestCase extends Orchestra
     public function getEnvironmentSetUp($app)
     {
         $app['config']->set('discounts.model_class', [
-            'user' => User::class,
-            'cart' => Cart::class,
-            'order' => Order::class,
+            'user' => Models\User::class,
+            'cart' => Models\Cart::class,
+            'order' => Models\Order::class,
+        ]);
+        $app['config']->set('discounts.nova_class', [
+            'order' => Nova\Order::class,
         ]);
 
         include_once __DIR__.'/../database/migrations/test/create_users_table.php';

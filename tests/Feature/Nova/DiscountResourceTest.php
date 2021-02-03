@@ -5,23 +5,25 @@ declare(strict_types=1);
 namespace Tipoff\Discounts\Tests\Feature\Nova;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Routing\Router;
+use NovaTesting\NovaAssertions;
+use Tipoff\Discounts\Models\Discount;
+use Tipoff\Discounts\Tests\Support\Models\User;
 use Tipoff\Discounts\Tests\TestCase;
 
 class DiscountResourceTest extends TestCase
 {
     use DatabaseTransactions;
+    use NovaAssertions;
 
     /** @test */
-    public function create_amount_discount()
+    public function index()
     {
-        $this->markTestSkipped('Still trying to figure out how to get Resource routes registered in the testbench');
+        Discount::factory()->count(4)->create();
 
-        /** @var Router $router */
-        $router = $this->app->make('router');
-        dd($router->getRoutes());
-        // dd($router);
-        $json = $this->getJson("nova/password/reset");
-        dump($json);
+        $this->be(User::factory()->create());
+
+        $this->novaIndex('discounts')
+            ->assertOk()
+            ->assertResourceCount(4);
     }
 }

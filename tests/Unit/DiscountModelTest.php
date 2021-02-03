@@ -10,9 +10,9 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tipoff\Discounts\Models\Discount;
-use Tipoff\Discounts\Tests\Models\Cart;
-use Tipoff\Discounts\Tests\Models\Order;
-use Tipoff\Discounts\Tests\Models\User;
+use Tipoff\Discounts\Tests\Support\Models\Cart;
+use Tipoff\Discounts\Tests\Support\Models\Order;
+use Tipoff\Discounts\Tests\Support\Models\User;
 use Tipoff\Discounts\Tests\TestCase;
 
 class DiscountModelTest extends TestCase
