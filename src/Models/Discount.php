@@ -80,6 +80,11 @@ class Discount extends BaseModel
             ->whereDate('expires_at', '>=', $date);
     }
 
+    public function scopeAvailable(Builder $query): Builder
+    {
+        return $this->scopeValidAt($query, new Carbon('now'));
+    }
+
     public function scopeByCartId(Builder $query, int $cartId): Builder
     {
         return $query->whereHas('carts', function ($q) use ($cartId) {

@@ -114,7 +114,7 @@ class DiscountModelTest extends TestCase
     }
 
     /** @test */
-    public function scope_by_valid_date()
+    public function scope_by_valid_at()
     {
         $today = new Carbon('today');
 
@@ -126,6 +126,20 @@ class DiscountModelTest extends TestCase
         Discount::factory()->expired(false)->count(4)->create();
 
         $count = Discount::query()->validAt($today)->count();
+        $this->assertEquals(4, $count);
+    }
+
+    /** @test */
+    public function scope_by_available()
+    {
+        Discount::factory()->expired()->count(3)->create();
+
+        $count = Discount::query()->available()->count();
+        $this->assertEquals(0, $count);
+
+        Discount::factory()->expired(false)->count(4)->create();
+
+        $count = Discount::query()->available()->count();
         $this->assertEquals(4, $count);
     }
 
