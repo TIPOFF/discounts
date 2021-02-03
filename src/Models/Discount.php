@@ -92,6 +92,13 @@ class Discount extends BaseModel
         });
     }
 
+    public function scopeByOrderId(Builder $query, int $orderId): Builder
+    {
+        return $query->whereHas('orders', function ($q) use ($orderId) {
+            $q->where('id', $orderId);
+        });
+    }
+
     /**
      * Validate is current discount is available at specified date.
      *

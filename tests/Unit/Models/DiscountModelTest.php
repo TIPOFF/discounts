@@ -157,6 +157,7 @@ class DiscountModelTest extends TestCase
         $this->assertEquals(1, $discount->carts()->count());
     }
 
+    /** @test */
     public function by_cart_id()
     {
         /** @var Discount $discount */
@@ -168,7 +169,7 @@ class DiscountModelTest extends TestCase
 
         $discounts = Discount::query()->byCartId($cart->id)->get();
 
-        $this->assertEquals(1, $discounts);
+        $this->assertEquals(1, $discounts->count());
     }
 
     /** @test */
@@ -179,10 +180,25 @@ class DiscountModelTest extends TestCase
 
         /** @var Order $order */
         $order = Order::factory()->create();
-        $order->discounts()->sync([$discount->id]);
+        $discount->orders()->sync([$order->id]);
 
         $discount->refresh();
         $this->assertEquals(1, $discount->orders()->count());
+    }
+
+    /** @test */
+    public function by_order_id()
+    {
+        /** @var Discount $discount */
+        $discount = Discount::factory()->create();
+
+        /** @var Order $order */
+        $order = Order::factory()->create();
+        $discount->orders()->sync([$order->id]);
+
+        $discounts = Discount::query()->byOrderId($order->id)->get();
+
+        $this->assertEquals(1, $discounts->count());
     }
 
     /** @test */
