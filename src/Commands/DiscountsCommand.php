@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tipoff\Discounts\Commands;
 
 use Illuminate\Console\Command;

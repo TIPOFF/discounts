@@ -1,10 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tipoff\Discounts\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Laravel\Nova\NovaCoreServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Tipoff\Discounts\DiscountsServiceProvider;
+use Tipoff\Discounts\Tests\Support\Models;
+use Tipoff\Discounts\Tests\Support\Nova;
+use Tipoff\Discounts\Tests\Support\Providers\NovaTestbenchServiceProvider;
+use Tipoff\Support\SupportServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -20,22 +27,36 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
+            NovaCoreServiceProvider::class,
+            NovaTestbenchServiceProvider::class,
+            SupportServiceProvider::class,
             DiscountsServiceProvider::class,
         ];
     }
 
     public function getEnvironmentSetUp($app)
     {
-        $app['config']->set('database.default', 'sqlite');
-        $app['config']->set('database.connections.sqlite', [
-            'driver' => 'sqlite',
-            'database' => ':memory:',
-            'prefix' => '',
+        $app['config']->set('discounts.model_class', [
+            'user' => Models\User::class,
+            'cart' => Models\Cart::class,
+            'order' => Models\Order::class,
+        ]);
+        $app['config']->set('discounts.nova_class', [
+            'order' => Nova\Order::class,
         ]);
 
-        /*
-        include_once __DIR__.'/../database/migrations/create_discounts_table.php.stub';
-        (new \CreatePackageTable())->up();
-        */
+        include_once __DIR__.'/../database/migrations/test/create_users_table.php';
+        include_once __DIR__.'/../database/migrations/test/create_carts_table.php';
+        include_once __DIR__.'/../database/migrations/test/create_orders_table.php';
+        (new \CreateUsersTable())->up();
+        (new \CreateCartsTable())->up();
+        (new \CreateOrdersTable())->up();
+
+        include_once __DIR__.'/../database/migrations/2020_05_06_110000_create_discounts_table.php';
+        include_once __DIR__.'/../database/migrations/2020_05_06_120000_create_discount_order_table.php';
+        include_once __DIR__.'/../database/migrations/2020_06_30_110000_create_cart_discount_pivot_table.php';
+        (new \CreateDiscountsTable())->up();
+        (new \CreateDiscountOrderTable())->up();
+        (new \CreateCartDiscountPivotTable())->up();
     }
 }

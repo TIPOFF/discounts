@@ -1,10 +1,8 @@
-# :package_description
+# Laravel Package for handling Discounts used in Ecommerce packages
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/tipoff/discounts.svg?style=flat-square)](https://packagist.org/packages/tipoff/discounts)
 [![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/tipoff/discounts/run-tests?label=tests)](https://github.com/tipoff/discounts/actions?query=workflow%3ATests+branch%3Amaster)
 [![Total Downloads](https://img.shields.io/packagist/dt/tipoff/discounts.svg?style=flat-square)](https://packagist.org/packages/tipoff/discounts)
-
-This is where your description should go.
 
 ## Installation
 
@@ -14,36 +12,21 @@ You can install the package via composer:
 composer require tipoff/discounts
 ```
 
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --provider="Tipoff\Discounts\DiscountsServiceProvider" --tag="migrations"
-php artisan migrate
-```
+The migrations will run from the package. You can extend the Models from the package if you need additional classes or functions added to them.
 
 You can publish the config file with:
 ```bash
-php artisan vendor:publish --provider="Tipoff\Discounts\DiscountsServiceProvider" --tag="config"
+php artisan vendor:publish --provider="Tipoff\Discounts\DiscountsServiceProvider" --tag="discounts-config"
 ```
 
-This is the contents of the published config file:
+#### Registering the Nova resources
+
+If you would like to use the Nova resources included with this package, you need to register it manually in your `NovaServiceProvider` in the `boot` method.
 
 ```php
-return [
-];
-```
-
-## Usage
-
-```php
-$Discounts = new Tipoff\Discounts();
-echo $Discounts->echoPhrase('Hello, Tipoff!');
-```
-
-## Testing
-
-```bash
-composer test
+Nova::resources([
+    \Tipoff\Discounts\Nova\Discount::class,
+]);
 ```
 
 ## Changelog

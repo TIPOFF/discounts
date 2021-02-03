@@ -1,18 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDiscountsTable extends Migration
+class CreateOrdersTable extends Migration
 {
     public function up()
     {
-        Schema::create('discounts_table', function (Blueprint $table) {
-            $table->bigIncrements('id');
-
-            // add fields
-
+        Schema::create('orders', function (Blueprint $table) {
+            $table->id();
             $table->timestamps();
         });
     }
