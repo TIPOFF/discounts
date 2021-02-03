@@ -14,7 +14,7 @@ use MabeEnum\Enum;
  * @method static AppliesTo PRODUCT()
  * @method static AppliesTo BOOKING_AND_PRODUCT()
  */
-class AppliesTo extends Enum
+final class AppliesTo extends Enum
 {
     const ORDER = 'order';
     const PARTICIPANT = 'participant';

@@ -74,7 +74,7 @@ class Discount extends Resource
                 ->rules(new Enum(AppliesTo::class))
                 ->required(),
             Number::make('Max Usage')
-                ->rules('integer', 'min:1')
+                ->rules(['integer', 'min:1'])
                 ->nullable(),
             Boolean::make('Auto Apply'),
             Date::make('Expires At', 'expires_at')->nullable(),
