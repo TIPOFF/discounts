@@ -1,4 +1,4 @@
-# Laravel Package for core support features used in Ecommerce packages
+# Laravel Package for handling Discounts used in Ecommerce packages
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/tipoff/discounts.svg?style=flat-square)](https://packagist.org/packages/tipoff/discounts)
 [![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/tipoff/discounts/run-tests?label=tests)](https://github.com/tipoff/discounts/actions?query=workflow%3ATests+branch%3Amaster)
