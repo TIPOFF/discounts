@@ -45,12 +45,10 @@ class TestCase extends Orchestra
             'order' => Nova\Order::class,
         ]);
 
-        include_once __DIR__.'/../database/migrations/test/create_users_table.php';
-        include_once __DIR__.'/../database/migrations/test/create_carts_table.php';
-        include_once __DIR__.'/../database/migrations/test/create_orders_table.php';
-        (new \CreateUsersTable())->up();
-        (new \CreateCartsTable())->up();
-        (new \CreateOrdersTable())->up();
+        // Create stub tables to satisfy FK dependencies
+        foreach (config('discounts.model_class') as $class) {
+            $class::createTable();
+        }
 
         include_once __DIR__.'/../database/migrations/2020_05_06_110000_create_discounts_table.php';
         include_once __DIR__.'/../database/migrations/2020_05_06_120000_create_discount_order_table.php';

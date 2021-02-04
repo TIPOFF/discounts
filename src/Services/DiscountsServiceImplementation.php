@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tipoff\Discounts\API;
+namespace Tipoff\Discounts\Services;
 
 use Brick\Money\Money;
 use Carbon\Carbon;
