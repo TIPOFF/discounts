@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tipoff\Discounts\Tests\Support\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Tipoff\Support\Models\TestModelStub;
 
 class Order extends Model
 {
-    use HasFactory;
+    use TestModelStub;
 
     protected $guarded = [
         'id',
