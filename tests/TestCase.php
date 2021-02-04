@@ -46,7 +46,7 @@ class TestCase extends Orchestra
         ]);
 
         // Create stub tables to satisfy FK dependencies
-        foreach(config('discounts.model_class') as $class) {
+        foreach (config('discounts.model_class') as $class) {
             $class::createTable();
         }
 

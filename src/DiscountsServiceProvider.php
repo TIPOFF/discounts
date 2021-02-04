@@ -6,9 +6,9 @@ namespace Tipoff\Discounts;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Tipoff\Discounts\Services\DiscountsServiceImplementation;
 use Tipoff\Discounts\Commands\DiscountsCommand;
 use Tipoff\Discounts\Contracts\DiscountsService;
+use Tipoff\Discounts\Services\DiscountsServiceImplementation;
 
 class DiscountsServiceProvider extends PackageServiceProvider
 {
