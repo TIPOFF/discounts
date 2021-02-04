@@ -17,6 +17,7 @@
     "require": {
         "php": "^7.4|^8.0",
         "illuminate/contracts": "^8.0",
+        "laravel/framework": "^8.2",
         "laravel/nova": "^3.20",
         "marc-mabe/php-enum": "^4.4",
         "nesbot/carbon": "^2.44",
