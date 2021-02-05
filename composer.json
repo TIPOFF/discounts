@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "laravel/nova": "^3.20",
+        "php": "^7.3|^8.0",
         "marc-mabe/php-enum": "^4.4",
         "nesbot/carbon": "^2.44",
         "tipoff/support": "^1.0.5"
