@@ -8,10 +8,10 @@ use Assert\Assert;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Tipoff\Support\Enums\AppliesTo;
 use Tipoff\Checkout\Models\Cart;
 use Tipoff\Checkout\Models\Order;
 use Tipoff\Support\Casts\Enum;
+use Tipoff\Support\Enums\AppliesTo;
 use Tipoff\Support\Models\BaseModel;
 
 /**

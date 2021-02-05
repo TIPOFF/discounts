@@ -24,7 +24,7 @@ class TestCase extends Orchestra
             $baseName = class_basename($modelName);
             foreach ([
                          'Discounts',
-                         'Checkout'
+                         'Checkout',
                      ] as $package) {
                 $factoryClass = "Tipoff\\{$package}\\Database\\Factories\\{$baseName}Factory";
                 if (class_exists($factoryClass)) {
@@ -59,7 +59,7 @@ class TestCase extends Orchestra
         }
 
         $classBasename = class_basename($class);
-        $classNamespace = substr($class, 0,strrpos($class, '\\'));
+        $classNamespace = substr($class, 0, strrpos($class, '\\'));
 
         $classDef = <<<EOT
 namespace {$classNamespace};

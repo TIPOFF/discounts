@@ -17,8 +17,8 @@ use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
-use Tipoff\Support\Enums\AppliesTo;
 use Tipoff\Discounts\Rules\DiscountCode;
+use Tipoff\Support\Enums\AppliesTo;
 use Tipoff\Support\Nova\Resource;
 use Tipoff\Support\Rules\Enum;
 
