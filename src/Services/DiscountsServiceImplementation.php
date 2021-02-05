@@ -6,9 +6,9 @@ namespace Tipoff\Discounts\Services;
 
 use Brick\Money\Money;
 use Carbon\Carbon;
-use Tipoff\Discounts\Contracts\DiscountableCart;
-use Tipoff\Discounts\Contracts\DiscountsService;
-use Tipoff\Discounts\Enums\AppliesTo;
+use Tipoff\Checkout\Contracts\CartInterface;
+use Tipoff\Checkout\Contracts\DiscountsService;
+use Tipoff\Support\Enums\AppliesTo;
 use Tipoff\Discounts\Models\Discount;
 
 class DiscountsServiceImplementation implements DiscountsService
@@ -41,7 +41,7 @@ class DiscountsServiceImplementation implements DiscountsService
         ]);
     }
 
-    public function applyCodeToCart(DiscountableCart $cart, string $code): bool
+    public function applyCodeToCart(CartInterface $cart, string $code): bool
     {
         /** @var Discount $discount */
         if ($discount = Discount::query()->available()->where('code', $code)->first()) {
@@ -57,7 +57,7 @@ class DiscountsServiceImplementation implements DiscountsService
         return false;
     }
 
-    public function calculateCartDiscounts(DiscountableCart $cart): Money
+    public function calculateDeductions(CartInterface $cart): Money
     {
         $discounts = Discount::query()->byCartId($cart->getId())->get();
 

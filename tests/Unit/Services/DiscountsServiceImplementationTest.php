@@ -7,8 +7,9 @@ namespace Tipoff\Discounts\Tests\Unit\Services;
 use Brick\Money\Money;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tipoff\Discounts\Contracts\DiscountsService;
-use Tipoff\Discounts\Enums\AppliesTo;
+use Tipoff\Checkout\Contracts\DiscountsService;
+use Tipoff\Support\Enums\AppliesTo;
+use Tipoff\Checkout\Models\CartItem;
 use Tipoff\Discounts\Models\Discount;
 use Tipoff\Discounts\Tests\Support\Models\Cart;
 use Tipoff\Discounts\Tests\Support\Models\User;
@@ -140,11 +141,9 @@ class DiscountsServiceImplementationTest extends TestCase
     /** @test */
     public function calculate_discount_with_no_discounts()
     {
-        $api = $this->app->make(DiscountsService::class);
-
         $cart = Cart::factory()->create();
 
-        $result = $api->calculateCartDiscounts($cart);
+        $result = $cart->calculateDiscountsTotal();
         $this->assertEquals(0, $result->getUnscaledAmount()->toInt());
     }
 
@@ -167,7 +166,7 @@ class DiscountsServiceImplementationTest extends TestCase
         $result = $api->applyCodeToCart($cart, 'TESTCODE');
         $this->assertTrue($result);
 
-        $result = $api->calculateCartDiscounts($cart);
+        $result = $cart->calculateDiscountsTotal();
         $this->assertEquals(1000, $result->getUnscaledAmount()->toInt());
     }
 
@@ -185,12 +184,14 @@ class DiscountsServiceImplementationTest extends TestCase
             User::factory()->create()->id,
         );
 
-        $cart = Cart::factory()->create();
+        $cart = Cart::factory()->create([
+            'participants' => 4,
+        ]);
 
         $result = $api->applyCodeToCart($cart, 'TESTCODE');
         $this->assertTrue($result);
 
-        $result = $api->calculateCartDiscounts($cart);
+        $result = $cart->calculateDiscountsTotal();
         $this->assertEquals(4000, $result->getUnscaledAmount()->toInt());
     }
 
@@ -217,7 +218,15 @@ class DiscountsServiceImplementationTest extends TestCase
             User::factory()->create()->id,
         );
 
-        $cart = Cart::factory()->create();
+        $cart = Cart::factory()
+            ->create()
+            ->each(function (Cart $cart) {
+                $cart->cartItems()->save(
+                    CartItem::factory()->make([
+                        'participants' => 4,
+                    ])
+                );
+            });
 
         $result = $api->applyCodeToCart($cart, 'CODE1');
         $this->assertTrue($result);
@@ -225,7 +234,7 @@ class DiscountsServiceImplementationTest extends TestCase
         $result = $api->applyCodeToCart($cart, 'CODE2');
         $this->assertTrue($result);
 
-        $result = $api->calculateCartDiscounts($cart);
+        $result = $cart->calculateDiscountsTotal();
         $this->assertEquals(5000, $result->getUnscaledAmount()->toInt());
     }
 }

@@ -18,7 +18,8 @@
         "php": "^7.4|^8.0",
         "marc-mabe/php-enum": "^4.4",
         "nesbot/carbon": "^2.44",
-        "tipoff/support": "^1.0.7"
+        "spatie/laravel-package-tools": "^1.1",
+        "tipoff/checkout": "dev-pdbreen/feature/baseline"
     },
     "require-dev": {
         "mockery/mockery": "^1.4",
@@ -56,6 +57,10 @@
         {
             "type": "composer",
             "url": "https://nova.laravel.com"
+        },
+        {
+            "type": "path",
+            "url": "../checkout"
         }
     ],
     "minimum-stability": "dev",

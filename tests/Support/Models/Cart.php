@@ -4,25 +4,10 @@ declare(strict_types=1);
 
 namespace Tipoff\Discounts\Tests\Support\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Tipoff\Discounts\Contracts\DiscountableCart;
-use Tipoff\Support\Models\TestModelStub;
+use Tipoff\Checkout\Models\Cart as BaseCart;
+use Tipoff\Discounts\Traits\HasDiscounts;
 
-class Cart extends Model implements DiscountableCart
+class Cart extends BaseCart
 {
-    use TestModelStub;
-
-    protected $guarded = [
-        'id',
-    ];
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    public function getTotalParticipants(): int
-    {
-        return 4;
-    }
+    use HasDiscounts;
 }

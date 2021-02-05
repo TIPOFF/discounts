@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Tipoff\Discounts\Enums\AppliesTo;
+use Tipoff\Support\Enums\AppliesTo;
 
 class CreateDiscountsTable extends Migration
 {
@@ -28,12 +28,8 @@ class CreateDiscountsTable extends Migration
             $table->boolean('auto_apply')->default(false)->index(); // Some discounts (weekday games, multiple bookings in order) will be automatically applied during checkout process.
             $table->date('expires_at')->nullable();
 
-            // TODO - refactor
-            $userModel = config('discounts.model_class.user');
-            $userTable = (new $userModel)->getTable();
-
-            $table->foreignId('creator_id')->references('id')->on($userTable);
-            $table->foreignId('updater_id')->references('id')->on($userTable);
+            $table->foreignIdFor(config('discounts.model_class.user'), 'creator_id');
+            $table->foreignIdFor(config('discounts.model_class.user'), 'updater_id');
             $table->timestamps();
         });
     }

@@ -8,11 +8,14 @@ use Assert\Assert;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Tipoff\Discounts\Enums\AppliesTo;
+use Tipoff\Support\Enums\AppliesTo;
+use Tipoff\Checkout\Models\Cart;
+use Tipoff\Checkout\Models\Order;
 use Tipoff\Support\Casts\Enum;
 use Tipoff\Support\Models\BaseModel;
 
 /**
+ * @property int|null id
  * @property string name
  * @property string code
  * @property int amount
@@ -21,6 +24,11 @@ use Tipoff\Support\Models\BaseModel;
  * @property int max_usage
  * @property bool auto_apply
  * @property Carbon expires_at
+ * @property Carbon created_at
+ * @property Carbon updated_at
+ * // Raw Relation ID
+ * @property int|null creator_id
+ * @property int|null updater_id
  */
 class Discount extends BaseModel
 {
@@ -43,14 +51,14 @@ class Discount extends BaseModel
         parent::boot();
 
         static::creating(function (Discount $discount) {
-            // TODO - refactor into Auditable trait?
+            // TODO - refactor into HasCreator trait
             if (auth()->check()) {
                 $discount->creator_id = auth()->id();
             }
         });
 
         static::saving(function (Discount $discount) {
-            // TODO - refactor into Auditable trait?
+            // TODO - refactor into HasUpdater trait
             if (auth()->check()) {
                 $discount->updater_id = auth()->id();
             }
@@ -120,12 +128,12 @@ class Discount extends BaseModel
 
     public function carts()
     {
-        return $this->belongsToMany(config('discounts.model_class.cart'))->withTimestamps();
+        return $this->belongsToMany(Cart::class)->withTimestamps();
     }
 
     public function orders()
     {
-        return $this->belongsToMany(config('discounts.model_class.order'));
+        return $this->belongsToMany(Order::class);
     }
 
     public function creator()

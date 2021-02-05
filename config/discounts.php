@@ -1,17 +1,16 @@
 <?php
 
-use Tipoff\Discounts\Enums\AppliesTo;
+use Tipoff\Support\Enums\AppliesTo;
 
 return [
 
     'model_class' => [
         'user' => \App\Models\User::class,
-        'order' => \App\Models\Order::class,
-        'cart' => \App\Models\Cart::class,
     ],
 
     'nova_class' => [
         'user' => \App\Nova\User::class,
+        'order' => \App\Nova\Order::class,
     ],
 
     'applications' => [
