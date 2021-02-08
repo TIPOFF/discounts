@@ -7,10 +7,10 @@ namespace Tipoff\Discounts\Models;
 use Assert\Assert;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Tipoff\Discounts\Enums\AppliesTo;
 use Tipoff\Support\Casts\Enum;
 use Tipoff\Support\Models\BaseModel;
+use Tipoff\Support\Traits\HasPackageFactory;
 
 /**
  * @property string name
@@ -24,7 +24,7 @@ use Tipoff\Support\Models\BaseModel;
  */
 class Discount extends BaseModel
 {
-    use HasFactory;
+    use HasPackageFactory;
 
     protected $guarded = ['id'];
     protected $casts = [
