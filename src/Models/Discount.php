@@ -7,7 +7,6 @@ namespace Tipoff\Discounts\Models;
 use Assert\Assert;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Tipoff\Support\Casts\Enum;
 use Tipoff\Support\Enums\AppliesTo;
 use Tipoff\Support\Traits\HasPackageFactory;
@@ -22,7 +21,7 @@ use Tipoff\Support\Traits\HasPackageFactory;
  * @property bool auto_apply
  * @property Carbon expires_at
  */
-class Discount extends Model
+class Discount extends BaseModel
 {
     use HasPackageFactory;
 
