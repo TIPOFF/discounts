@@ -8,7 +8,7 @@ use Brick\Money\Money;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tipoff\Discounts\Contracts\DiscountsService;
-use Tipoff\Discounts\Enums\AppliesTo;
+use Tipoff\Support\Enums\AppliesTo;
 use Tipoff\Discounts\Models\Discount;
 use Tipoff\Discounts\Tests\Support\Models\Cart;
 use Tipoff\Discounts\Tests\Support\Models\User;

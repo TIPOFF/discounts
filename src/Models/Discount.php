@@ -7,10 +7,10 @@ namespace Tipoff\Discounts\Models;
 use Assert\Assert;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Tipoff\Discounts\Enums\AppliesTo;
+use Tipoff\Support\Enums\AppliesTo;
 use Tipoff\Support\Casts\Enum;
 use Tipoff\Support\Models\BaseModel;
+use Tipoff\Support\Traits\HasPackageFactory;
 
 /**
  * @property string name
@@ -24,7 +24,7 @@ use Tipoff\Support\Models\BaseModel;
  */
 class Discount extends BaseModel
 {
-    use HasFactory;
+    use HasPackageFactory;
 
     protected $guarded = ['id'];
     protected $casts = [
@@ -120,21 +120,21 @@ class Discount extends BaseModel
 
     public function carts()
     {
-        return $this->belongsToMany(config('discounts.model_class.cart'))->withTimestamps();
+        return $this->belongsToMany(class_basename(app('cart')))->withTimestamps();
     }
 
     public function orders()
     {
-        return $this->belongsToMany(config('discounts.model_class.order'));
+        return $this->belongsToMany(class_basename(app('order')));
     }
 
     public function creator()
     {
-        return $this->belongsTo(config('discounts.model_class.user'), 'creator_id');
+        return $this->belongsTo(class_basename(app('user')), 'creator_id');
     }
 
     public function updater()
     {
-        return $this->belongsTo(config('discounts.model_class.user'), 'updater_id');
+        return $this->belongsTo(class_basename(app('user')), 'updater_id');
     }
 }

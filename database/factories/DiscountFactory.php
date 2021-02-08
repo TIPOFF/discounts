@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tipoff\Discounts\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Tipoff\Discounts\Enums\AppliesTo;
+use Tipoff\Support\Enums\AppliesTo;
 use Tipoff\Discounts\Models\Discount;
 
 class DiscountFactory extends Factory
@@ -41,8 +41,8 @@ class DiscountFactory extends Factory
             'max_usage'     => $this->faker->randomElement([1, 1, 1, 1, 5, 100, 1000]),
             'auto_apply'    => $this->faker->boolean,
             'expires_at'    => $this->faker->dateTimeBetween($startDate = '-1 months', $endDate = '+3 years', $timezone = null),
-            'creator_id'    => randomOrCreate(config('discounts.model_class.user')),
-            'updater_id'    => randomOrCreate(config('discounts.model_class.user')),
+            'creator_id'    => randomOrCreate(class_basename(app('user'))),
+            'updater_id'    => randomOrCreate(class_basename(app('user'))),
         ];
     }
 
