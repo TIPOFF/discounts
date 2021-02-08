@@ -7,8 +7,8 @@ namespace Tipoff\Discounts\Models;
 use Assert\Assert;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use Tipoff\Discounts\Enums\AppliesTo;
 use Tipoff\Support\Casts\Enum;
+use Tipoff\Support\Enums\AppliesTo;
 use Tipoff\Support\Models\BaseModel;
 use Tipoff\Support\Traits\HasPackageFactory;
 
@@ -120,21 +120,21 @@ class Discount extends BaseModel
 
     public function carts()
     {
-        return $this->belongsToMany(config('discounts.model_class.cart'))->withTimestamps();
+        return $this->belongsToMany(app('cart'))->withTimestamps();
     }
 
     public function orders()
     {
-        return $this->belongsToMany(config('discounts.model_class.order'));
+        return $this->belongsToMany(app('order'));
     }
 
     public function creator()
     {
-        return $this->belongsTo(config('discounts.model_class.user'), 'creator_id');
+        return $this->belongsTo(app('user'), 'creator_id');
     }
 
     public function updater()
     {
-        return $this->belongsTo(config('discounts.model_class.user'), 'updater_id');
+        return $this->belongsTo(app('user'), 'updater_id');
     }
 }

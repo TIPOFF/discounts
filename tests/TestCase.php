@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tipoff\Discounts\Tests;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Laravel\Nova\NovaCoreServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Tipoff\Discounts\DiscountsServiceProvider;
@@ -19,9 +18,12 @@ class TestCase extends Orchestra
     {
         parent::setUp();
 
-        Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Tipoff\\Discounts\\Database\\Factories\\'.class_basename($modelName).'Factory'
-        );
+        $this->artisan('migrate', ['--database' => 'testing'])->run();
+
+        // Create stub tables for stub models to satisfy possible FK dependencies
+        foreach (config('tipoff.model_class') as $class) {
+            $class::createTable();
+        }
     }
 
     protected function getPackageProviders($app)
@@ -34,9 +36,12 @@ class TestCase extends Orchestra
         ];
     }
 
+    /**
+     * @param \Illuminate\Foundation\Application $app
+     */
     public function getEnvironmentSetUp($app)
     {
-        $app['config']->set('discounts.model_class', [
+        $app['config']->set('tipoff.model_class', [
             'user' => Models\User::class,
             'cart' => Models\Cart::class,
             'order' => Models\Order::class,
@@ -45,16 +50,9 @@ class TestCase extends Orchestra
             'order' => Nova\Order::class,
         ]);
 
-        // Create stub tables to satisfy FK dependencies
-        foreach (config('discounts.model_class') as $class) {
-            $class::createTable();
+        // Create stub models for anything not already defined
+        foreach (config('tipoff.model_class') as $class) {
+            createModelStub($class);
         }
-
-        include_once __DIR__.'/../database/migrations/2020_05_06_110000_create_discounts_table.php';
-        include_once __DIR__.'/../database/migrations/2020_05_06_120000_create_discount_order_table.php';
-        include_once __DIR__.'/../database/migrations/2020_06_30_110000_create_cart_discount_pivot_table.php';
-        (new \CreateDiscountsTable())->up();
-        (new \CreateDiscountOrderTable())->up();
-        (new \CreateCartDiscountPivotTable())->up();
     }
 }

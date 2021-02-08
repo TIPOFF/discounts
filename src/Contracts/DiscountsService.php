@@ -6,7 +6,7 @@ namespace Tipoff\Discounts\Contracts;
 
 use Brick\Money\Money;
 use Carbon\Carbon;
-use Tipoff\Discounts\Enums\AppliesTo;
+use Tipoff\Support\Enums\AppliesTo;
 
 interface DiscountsService
 {

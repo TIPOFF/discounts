@@ -8,8 +8,8 @@ use Brick\Money\Money;
 use Carbon\Carbon;
 use Tipoff\Discounts\Contracts\DiscountableCart;
 use Tipoff\Discounts\Contracts\DiscountsService;
-use Tipoff\Discounts\Enums\AppliesTo;
 use Tipoff\Discounts\Models\Discount;
+use Tipoff\Support\Enums\AppliesTo;
 
 class DiscountsServiceImplementation implements DiscountsService
 {
