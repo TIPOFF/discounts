@@ -24,7 +24,7 @@ class TestCase extends Orchestra
         // Create stub tables for stub models to satisfy possible FK dependencies
         foreach (config('tipoff.model_class') as $class) {
             // TODO - push existence check into tipoff/support trait
-            if (!Schema::hasTable((new $class)->getTable())) {
+            if (! Schema::hasTable((new $class)->getTable())) {
                 $class::createTable();
             }
         }
