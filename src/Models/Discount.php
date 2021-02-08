@@ -7,6 +7,7 @@ namespace Tipoff\Discounts\Models;
 use Assert\Assert;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Tipoff\Support\Casts\Enum;
 use Tipoff\Support\Enums\AppliesTo;
 use Tipoff\Support\Models\BaseModel;
@@ -22,7 +23,7 @@ use Tipoff\Support\Traits\HasPackageFactory;
  * @property bool auto_apply
  * @property Carbon expires_at
  */
-class Discount extends BaseModel
+class Discount extends Model
 {
     use HasPackageFactory;
 
@@ -120,21 +121,21 @@ class Discount extends BaseModel
 
     public function carts()
     {
-        return $this->belongsToMany(class_basename(app('cart')))->withTimestamps();
+        return $this->belongsToMany(app('cart'))->withTimestamps();
     }
 
     public function orders()
     {
-        return $this->belongsToMany(class_basename(app('order')));
+        return $this->belongsToMany(app('order'));
     }
 
     public function creator()
     {
-        return $this->belongsTo(class_basename(app('user')), 'creator_id');
+        return $this->belongsTo(app('user'), 'creator_id');
     }
 
     public function updater()
     {
-        return $this->belongsTo(class_basename(app('user')), 'updater_id');
+        return $this->belongsTo(app('user'), 'updater_id');
     }
 }
