@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tipoff\Discounts\Models\Discount;
 use Tipoff\Discounts\Tests\Support\Models\Cart;
-use Tipoff\Discounts\Tests\Support\Models\Order;
 use Tipoff\Discounts\Tests\Support\Models\User;
 use Tipoff\Discounts\Tests\TestCase;
 
@@ -178,8 +177,7 @@ class DiscountModelTest extends TestCase
         /** @var Discount $discount */
         $discount = Discount::factory()->create();
 
-        /** @var Order $order */
-        $order = Order::factory()->create();
+        $order = app('order')::factory()->create();
         $discount->orders()->sync([$order->id]);
 
         $discount->refresh();
@@ -192,8 +190,7 @@ class DiscountModelTest extends TestCase
         /** @var Discount $discount */
         $discount = Discount::factory()->create();
 
-        /** @var Order $order */
-        $order = Order::factory()->create();
+        $order = app('order')::factory()->create();
         $discount->orders()->sync([$order->id]);
 
         $discounts = Discount::query()->byOrderId($order->id)->get();

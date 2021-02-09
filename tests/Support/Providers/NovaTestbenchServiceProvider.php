@@ -13,9 +13,9 @@ class NovaTestbenchServiceProvider extends NovaApplicationServiceProvider
 {
     protected function resources()
     {
-        Nova::resources([
+        Nova::resources(array_merge(config('tipoff.nova_class'), [
             Discount::class,
-        ]);
+        ]));
     }
 
     protected function routes()

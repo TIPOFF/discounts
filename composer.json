@@ -18,7 +18,7 @@
         "php": "^7.4|^8.0",
         "marc-mabe/php-enum": "^4.4",
         "nesbot/carbon": "^2.44",
-        "tipoff/support": "^1.1.0"
+        "tipoff/support": "^1.1.1"
     },
     "require-dev": {
         "mockery/mockery": "^1.4",
