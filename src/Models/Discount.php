@@ -10,7 +10,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Tipoff\Support\Casts\Enum;
 use Tipoff\Support\Enums\AppliesTo;
 use Tipoff\Support\Models\BaseModel;
+use Tipoff\Support\Traits\HasCreator;
 use Tipoff\Support\Traits\HasPackageFactory;
+use Tipoff\Support\Traits\HasUpdater;
 
 /**
  * @property string name
@@ -28,9 +30,12 @@ use Tipoff\Support\Traits\HasPackageFactory;
 class Discount extends BaseModel
 {
     use HasPackageFactory;
+    use HasCreator;
+    use HasUpdater;
 
     protected $guarded = ['id'];
     protected $casts = [
+        'id' => 'integer',
         'name' => 'string',
         'code' => 'string', // TODO - use custom class to represent DiscountCode?
         'amount' => 'integer',
@@ -39,24 +44,15 @@ class Discount extends BaseModel
         'max_usage' => 'integer',
         'auto_apply' => 'boolean',
         'expires_at' => 'datetime',
+        'creator_id' => 'integer',
+        'updater_id' => 'integer',
     ];
 
     protected static function boot()
     {
         parent::boot();
 
-        static::creating(function (Discount $discount) {
-            // TODO - refactor into Auditable trait?
-            if (auth()->check()) {
-                $discount->creator_id = auth()->id();
-            }
-        });
-
         static::saving(function (Discount $discount) {
-            // TODO - refactor into Auditable trait?
-            if (auth()->check()) {
-                $discount->updater_id = auth()->id();
-            }
             $discount->code = strtoupper($discount->code);
             if (empty($discount->max_usage)) {
                 $discount->max_usage = 1;
@@ -129,15 +125,5 @@ class Discount extends BaseModel
     public function orders()
     {
         return $this->belongsToMany(app('order'));
-    }
-
-    public function creator()
-    {
-        return $this->belongsTo(app('user'), 'creator_id');
-    }
-
-    public function updater()
-    {
-        return $this->belongsTo(app('user'), 'updater_id');
     }
 }
