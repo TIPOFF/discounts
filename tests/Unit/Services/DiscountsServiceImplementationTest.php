@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tipoff\Discounts\Contracts\DiscountsService;
 use Tipoff\Discounts\Models\Discount;
 use Tipoff\Discounts\Tests\Support\Models\Cart;
-use Tipoff\Discounts\Tests\Support\Models\User;
+use Tipoff\TestSupport\Models\User;
 use Tipoff\Discounts\Tests\TestCase;
 use Tipoff\Support\Enums\AppliesTo;
 

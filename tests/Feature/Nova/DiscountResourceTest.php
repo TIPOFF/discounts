@@ -6,7 +6,7 @@ namespace Tipoff\Discounts\Tests\Feature\Nova;
 
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tipoff\Discounts\Models\Discount;
-use Tipoff\Discounts\Tests\Support\Models\User;
+use Tipoff\TestSupport\Models\User;
 use Tipoff\Discounts\Tests\TestCase;
 
 class DiscountResourceTest extends TestCase
