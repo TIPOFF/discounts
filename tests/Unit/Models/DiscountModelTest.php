@@ -178,8 +178,7 @@ class DiscountModelTest extends TestCase
         /** @var Discount $discount */
         $discount = Discount::factory()->create();
 
-        /** @var Order $order */
-        $order = Order::factory()->create();
+        $order = app('order')::factory()->create();
         $discount->orders()->sync([$order->id]);
 
         $discount->refresh();
@@ -192,8 +191,7 @@ class DiscountModelTest extends TestCase
         /** @var Discount $discount */
         $discount = Discount::factory()->create();
 
-        /** @var Order $order */
-        $order = Order::factory()->create();
+        $order = app('order')::factory()->create();
         $discount->orders()->sync([$order->id]);
 
         $discounts = Discount::query()->byOrderId($order->id)->get();

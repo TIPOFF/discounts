@@ -21,6 +21,9 @@ use Tipoff\Support\Traits\HasPackageFactory;
  * @property int max_usage
  * @property bool auto_apply
  * @property Carbon expires_at
+ * // Raw Relations
+ * @property int creator_id
+ * @property int updater_id
  */
 class Discount extends BaseModel
 {

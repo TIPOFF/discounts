@@ -79,7 +79,7 @@ class Discount extends Resource
             Boolean::make('Auto Apply'),
             Date::make('Expires At', 'expires_at')->nullable(),
 
-            HasMany::make('Orders'),
+            HasMany::make('Orders', 'orders', app()->getAlias('order')),
 
             new Panel('Data Fields', $this->dataFields()),
         ];
@@ -89,9 +89,9 @@ class Discount extends Resource
     {
         return [
             ID::make(),
-            BelongsTo::make('Created By', 'creator', config('discounts.nova_class.user'))->exceptOnForms(),
+            BelongsTo::make('Created By', 'creator', app()->getAlias('user'))->exceptOnForms(),
             DateTime::make('Created At')->exceptOnForms(),
-            BelongsTo::make('Updated By', 'updater', config('discounts.nova_class.user'))->exceptOnForms(),
+            BelongsTo::make('Updated By', 'updater', app()->getAlias('user'))->exceptOnForms(),
             DateTime::make('Updated At')->exceptOnForms(),
         ];
     }
