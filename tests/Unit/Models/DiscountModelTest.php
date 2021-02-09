@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tipoff\Discounts\Models\Discount;
 use Tipoff\Discounts\Tests\Support\Models\Cart;
-use Tipoff\Discounts\Tests\Support\Models\Order;
 use Tipoff\Discounts\Tests\Support\Models\User;
 use Tipoff\Discounts\Tests\TestCase;
 
