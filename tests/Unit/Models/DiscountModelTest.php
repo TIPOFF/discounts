@@ -10,8 +10,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tipoff\Discounts\Models\Discount;
 use Tipoff\Discounts\Tests\Support\Models\Cart;
-use Tipoff\TestSupport\Models\User;
 use Tipoff\Discounts\Tests\TestCase;
+use Tipoff\TestSupport\Models\User;
 
 class DiscountModelTest extends TestCase
 {
