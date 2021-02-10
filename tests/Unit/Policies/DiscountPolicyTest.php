@@ -17,10 +17,10 @@ class DiscountPolicyTest extends TestCase
     /** @test */
     public function view_any()
     {
-        $user = self::getUser('view discounts', true);
+        $user = self::createPermissionedUser('view discounts', true);
         $this->assertTrue($user->can('viewAny', Discount::class));
 
-        $user = self::getUser('view discounts', false);
+        $user = self::createPermissionedUser('view discounts', false);
         $this->assertFalse($user->can('viewAny', Discount::class));
     }
 
@@ -40,14 +40,14 @@ class DiscountPolicyTest extends TestCase
     public function data_provider_for_all_permissions_as_creator()
     {
         return [
-            'view-true' => [ 'view', self::getUser('view discounts', true), true ],
-            'view-false' => [ 'view', self::getUser('view discounts', false), false ],
-            'create-true' => [ 'create', self::getUser('create discounts', true), true ],
-            'create-false' => [ 'create', self::getUser('create discounts', false), false ],
-            'update-true' => [ 'update', self::getUser('update discounts', true), true ],
-            'update-false' => [ 'update', self::getUser('update discounts', false), false ],
-            'delete-true' => [ 'delete', self::getUser('delete discounts', true), false ],
-            'delete-false' => [ 'delete', self::getUser('delete discounts', false), false ],
+            'view-true' => [ 'view', self::createPermissionedUser('view discounts', true), true ],
+            'view-false' => [ 'view', self::createPermissionedUser('view discounts', false), false ],
+            'create-true' => [ 'create', self::createPermissionedUser('create discounts', true), true ],
+            'create-false' => [ 'create', self::createPermissionedUser('create discounts', false), false ],
+            'update-true' => [ 'update', self::createPermissionedUser('update discounts', true), true ],
+            'update-false' => [ 'update', self::createPermissionedUser('update discounts', false), false ],
+            'delete-true' => [ 'delete', self::createPermissionedUser('delete discounts', true), false ],
+            'delete-false' => [ 'delete', self::createPermissionedUser('delete discounts', false), false ],
         ];
     }
 
@@ -66,33 +66,5 @@ class DiscountPolicyTest extends TestCase
     {
         // Permissions are identical for creator or others
         return $this->data_provider_for_all_permissions_as_creator();
-    }
-
-    private static function getUser(string $permission, bool $hasPermission): UserInterface
-    {
-        /**
-         * Normally, this would be done with a makePartial() mock, but the mock gets lost
-         * and the real user class is used when the permission method is invoked.  So, we
-         * establish expectations in directly in an authenticatable class instance.
-         */
-        $user = new class extends User {
-            private string $permission;
-            private bool $hasPermission;
-
-            public function hasPermissionTo($permission, $guardName = null): bool
-            {
-                return $this->permission === $permission ? $this->hasPermission : false;
-            }
-
-            public function setHasPermission(string $permission, bool $hasPermission): self
-            {
-                $this->permission = $permission;
-                $this->hasPermission = $hasPermission;
-
-                return $this;
-            }
-        };
-
-        return $user->setHasPermission($permission, $hasPermission);
     }
 }
