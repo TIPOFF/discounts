@@ -7,7 +7,6 @@ namespace Tipoff\Discounts;
 use Illuminate\Support\Facades\Gate;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Tipoff\Discounts\Commands\DiscountsCommand;
 use Tipoff\Discounts\Contracts\DiscountsService;
 use Tipoff\Discounts\Models\Discount;
 use Tipoff\Discounts\Policies\DiscountPolicy;
