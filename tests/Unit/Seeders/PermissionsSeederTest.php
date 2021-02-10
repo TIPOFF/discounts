@@ -4,18 +4,11 @@ declare(strict_types=1);
 
 namespace Tipoff\Discounts\Tests\Unit\Seeders;
 
-use Assert\LazyAssertionException;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Schema;
 use Tipoff\Discounts\Database\Seeders\PermissionsSeeder;
-use Tipoff\Discounts\Models\Discount;
-use Tipoff\Discounts\Tests\Support\Models\Cart;
 use Tipoff\Discounts\Tests\TestCase;
-use Tipoff\Support\Contracts\Models\UserInterface;
-use Tipoff\TestSupport\Models\User;
 
 class PermissionsSeederTest extends TestCase
 {
