@@ -4,12 +4,8 @@ declare(strict_types=1);
 
 namespace Tipoff\Discounts\Tests\Unit\Models;
 
-use Assert\LazyAssertionException;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tipoff\Discounts\Models\Discount;
-use Tipoff\Discounts\Tests\Support\Models\Cart;
 use Tipoff\Discounts\Tests\TestCase;
 use Tipoff\Support\Contracts\Models\UserInterface;
 use Tipoff\TestSupport\Models\User;
@@ -72,7 +68,7 @@ class DiscountPolicyTest extends TestCase
         return $this->data_provider_for_all_permissions_as_creator();
     }
 
-    static private function getUser(string $permission, bool $hasPermission): UserInterface
+    private static function getUser(string $permission, bool $hasPermission): UserInterface
     {
         /**
          * Normally, this would be done with a makePartial() mock, but the mock gets lost
