@@ -8,7 +8,6 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tipoff\Discounts\Models\Discount;
 use Tipoff\Discounts\Tests\TestCase;
 use Tipoff\Support\Contracts\Models\UserInterface;
-use Tipoff\TestSupport\Models\User;
 
 class DiscountPolicyTest extends TestCase
 {
