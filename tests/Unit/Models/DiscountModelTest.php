@@ -8,9 +8,12 @@ use Assert\LazyAssertionException;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tipoff\Checkout\Contracts\Models\DiscountInterface;
+use Tipoff\Discounts\Exceptions\UnsupportedDiscountTypeException;
 use Tipoff\Discounts\Models\Discount;
 use Tipoff\Discounts\Tests\Support\Models\Cart;
 use Tipoff\Discounts\Tests\TestCase;
+use Tipoff\Support\Enums\AppliesTo;
 use Tipoff\TestSupport\Models\User;
 
 class DiscountModelTest extends TestCase
@@ -231,5 +234,154 @@ class DiscountModelTest extends TestCase
             'amount' => 1000,
             'percent' => 0.12,
         ]);
+    }
+
+    /** @test */
+    public function find_valid_code()
+    {
+        /** @var Discount $discount */
+        $discount = Discount::factory()->amount()->expired(false)->create([
+            'code' => 'TESTCODE',
+            'amount' => 1000,
+            'applies_to' => AppliesTo::ORDER(),
+        ]);
+
+        $result = Discount::findDeductionByCode('TESTCODE');
+        $this->assertNotNull($result);
+        $this->assertEquals($discount->id, $result->getId());
+    }
+
+    /** @test */
+    public function apply_code_to_cart()
+    {
+        /** @var Discount $discount */
+        $discount = Discount::factory()->amount()->expired(false)->create([
+            'code' => 'TESTCODE',
+            'amount' => 1000,
+            'applies_to' => AppliesTo::ORDER(),
+        ]);
+
+        $cart = Cart::factory()->create();
+
+        $discount->applyToCart($cart);
+
+        $count = Discount::query()->byCartId($cart->id)->count();
+        $this->assertEquals(1, $count);
+    }
+
+    /** @test */
+    public function find_unknown_code()
+    {
+        $result = Discount::findDeductionByCode('TESTCODE');
+        $this->assertNull($result);
+    }
+
+    /** @test */
+    public function find_expired_code()
+    {
+        /** @var Discount $discount */
+        $discount = Discount::factory()->amount()->expired(true)->create([
+            'code' => 'TESTCODE',
+            'amount' => 1000,
+            'applies_to' => AppliesTo::ORDER(),
+        ]);
+
+        $result = Discount::findDeductionByCode('TESTCODE');
+        $this->assertNull($result);
+    }
+
+    /** @test */
+    public function apply_unsupported_code_to_cart()
+    {
+        /** @var Discount $discount */
+        $discount = Discount::factory()->amount()->expired(false)->create([
+            'code' => 'TESTCODE',
+            'amount' => 1000,
+            'applies_to' => AppliesTo::BOOKING_AND_PRODUCT(),
+        ]);
+
+        $cart = Cart::factory()->create();
+
+        $this->expectException(UnsupportedDiscountTypeException::class);
+        $this->expectExceptionMessage('Discount type of each is not supported');
+
+        $discount->applyToCart($cart);
+    }
+
+    /** @test */
+    public function calculate_discount_with_no_discounts()
+    {
+        $cart = Cart::factory()->create();
+
+        $result = Discount::calculateCartDeduction($cart);
+        $this->assertEquals(0, $result->getUnscaledAmount()->toInt());
+    }
+
+    /** @test */
+    public function calculate_discount_with_order_discounts()
+    {
+        /** @var Discount $discount */
+        $discount = Discount::factory()->amount()->expired(false)->create([
+            'code' => 'TESTCODE',
+            'amount' => 1000,
+            'applies_to' => AppliesTo::ORDER(),
+        ]);
+
+        $cart = Cart::factory()->create();
+
+        $discount->applyToCart($cart);
+
+        $result = Discount::calculateCartDeduction($cart);
+        $this->assertEquals(1000, $result->getUnscaledAmount()->toInt());
+    }
+
+    /** @test */
+    public function calculate_discount_with_particpant_discounts()
+    {
+        /** @var Discount $discount */
+        $discount = Discount::factory()->amount()->expired(false)->create([
+            'code' => 'TESTCODE',
+            'amount' => 1000,
+            'applies_to' => AppliesTo::PARTICIPANT(),
+        ]);
+
+        $cart = Cart::factory()->create();
+        $cart = \Mockery::mock($cart)->makePartial();
+        $cart->shouldReceive('getTotalParticipants')->andReturn(4);
+
+        $discount->applyToCart($cart);
+
+        $result = Discount::calculateCartDeduction($cart);
+        $this->assertEquals(4000, $result->getUnscaledAmount()->toInt());
+    }
+
+    /** @test */
+    public function calculate_discount_with_multiple_discounts()
+    {
+        $api = $this->app->make(DiscountInterface::class);
+
+        /** @var Discount $orderCode */
+        $orderCode = Discount::factory()->amount()->expired(false)->create([
+            'code' => 'CODE1',
+            'amount' => 1000,
+            'applies_to' => AppliesTo::ORDER(),
+        ]);
+
+        /** @var Discount $participantCode */
+        $participantCode = Discount::factory()->amount()->expired(false)->create([
+            'code' => 'CODE2',
+            'amount' => 1000,
+            'applies_to' => AppliesTo::PARTICIPANT(),
+        ]);
+
+        $cart = Cart::factory()->create();
+        $cart = \Mockery::mock($cart)->makePartial();
+        $cart->shouldReceive('getTotalParticipants')->andReturn(4);
+
+        $orderCode->applyToCart($cart);
+        $participantCode->applyToCart($cart);
+
+        $result = Discount::calculateCartDeduction($cart);
+        $this->assertEquals(5000, $result->getUnscaledAmount()->toInt());
     }
 }

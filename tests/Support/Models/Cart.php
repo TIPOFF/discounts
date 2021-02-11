@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tipoff\Discounts\Tests\Support\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Tipoff\Discounts\Contracts\DiscountableCart;
+use Tipoff\Checkout\Contracts\Models\CartInterface;
+use Tipoff\Support\Models\BaseModel;
 use Tipoff\Support\Models\TestModelStub;
 
-class Cart extends Model implements DiscountableCart
+class Cart extends BaseModel implements CartInterface
 {
     use TestModelStub;
 
@@ -16,13 +16,12 @@ class Cart extends Model implements DiscountableCart
         'id',
     ];
 
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
     public function getTotalParticipants(): int
     {
         return 4;
+    }
+
+    public function applyDeductionCode(string $code): CartInterface
+    {
     }
 }
