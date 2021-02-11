@@ -18,15 +18,17 @@
         "php": "^7.4|^8.0",
         "marc-mabe/php-enum": "^4.4",
         "nesbot/carbon": "^2.44",
-        "tipoff/support": "^1.2"
+        "tipoff/authorization": "^1.0.1",
+        "tipoff/support": "^1.2.2"
     },
     "require-dev": {
-        "tipoff/test-support": "^1.0"
+        "tipoff/test-support": "^1.0.2"
     },
     "autoload": {
         "psr-4": {
             "Tipoff\\Discounts\\": "src",
-            "Tipoff\\Discounts\\Database\\Factories\\": "database/factories"
+            "Tipoff\\Discounts\\Database\\Factories\\": "database/factories",
+            "Tipoff\\Discounts\\Database\\Seeders\\": "database/seeders"
         }
     },
     "autoload-dev": {
