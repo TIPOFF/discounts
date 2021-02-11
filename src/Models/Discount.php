@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Tipoff\Checkout\Contracts\Models\CartDeduction;
 use Tipoff\Checkout\Contracts\Models\CartInterface;
 use Tipoff\Checkout\Contracts\Models\DiscountInterface;
+use Tipoff\Checkout\Models\Cart;
+use Tipoff\Checkout\Models\Order;
 use Tipoff\Discounts\Exceptions\UnsupportedDiscountTypeException;
 use Tipoff\Support\Casts\Enum;
 use Tipoff\Support\Enums\AppliesTo;
@@ -125,12 +127,12 @@ class Discount extends BaseModel implements DiscountInterface
 
     public function carts()
     {
-        return $this->belongsToMany(app('cart'))->withTimestamps();
+        return $this->belongsToMany(Cart::class)->withTimestamps();
     }
 
     public function orders()
     {
-        return $this->belongsToMany(app('order'));
+        return $this->belongsToMany(Order::class);
     }
 
     /******************************

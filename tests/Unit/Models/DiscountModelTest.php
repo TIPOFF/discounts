@@ -9,9 +9,10 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tipoff\Checkout\Contracts\Models\DiscountInterface;
+use Tipoff\Checkout\Models\Cart;
+use Tipoff\Checkout\Models\Order;
 use Tipoff\Discounts\Exceptions\UnsupportedDiscountTypeException;
 use Tipoff\Discounts\Models\Discount;
-use Tipoff\Discounts\Tests\Support\Models\Cart;
 use Tipoff\Discounts\Tests\TestCase;
 use Tipoff\Support\Enums\AppliesTo;
 use Tipoff\TestSupport\Models\User;
@@ -151,7 +152,7 @@ class DiscountModelTest extends TestCase
         /** @var Discount $discount */
         $discount = Discount::factory()->create();
 
-        /** @var Cart $order */
+        /** @var Cart $cart */
         $cart = Cart::factory()->create();
         $discount->carts()->sync([$cart->id]);
 
@@ -165,7 +166,7 @@ class DiscountModelTest extends TestCase
         /** @var Discount $discount */
         $discount = Discount::factory()->create();
 
-        /** @var Cart $order */
+        /** @var Cart $cart */
         $cart = Cart::factory()->create();
         $discount->carts()->sync([$cart->id]);
 
@@ -180,7 +181,7 @@ class DiscountModelTest extends TestCase
         /** @var Discount $discount */
         $discount = Discount::factory()->create();
 
-        $order = app('order')::factory()->create();
+        $order = Order::factory()->create();
         $discount->orders()->sync([$order->id]);
 
         $discount->refresh();
@@ -193,7 +194,7 @@ class DiscountModelTest extends TestCase
         /** @var Discount $discount */
         $discount = Discount::factory()->create();
 
-        $order = app('order')::factory()->create();
+        $order = Order::factory()->create();
         $discount->orders()->sync([$order->id]);
 
         $discounts = Discount::query()->byOrderId($order->id)->get();
