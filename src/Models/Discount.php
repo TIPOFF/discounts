@@ -5,8 +5,15 @@ declare(strict_types=1);
 namespace Tipoff\Discounts\Models;
 
 use Assert\Assert;
+use Brick\Money\Money;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Tipoff\Checkout\Contracts\Models\CartDeduction;
+use Tipoff\Checkout\Contracts\Models\CartInterface;
+use Tipoff\Checkout\Contracts\Models\DiscountInterface;
+use Tipoff\Checkout\Models\Cart;
+use Tipoff\Checkout\Models\Order;
+use Tipoff\Discounts\Exceptions\UnsupportedDiscountTypeException;
 use Tipoff\Support\Casts\Enum;
 use Tipoff\Support\Enums\AppliesTo;
 use Tipoff\Support\Models\BaseModel;
@@ -15,6 +22,7 @@ use Tipoff\Support\Traits\HasPackageFactory;
 use Tipoff\Support\Traits\HasUpdater;
 
 /**
+ * @property int|null id
  * @property string name
  * @property string code
  * @property int amount
@@ -24,10 +32,10 @@ use Tipoff\Support\Traits\HasUpdater;
  * @property bool auto_apply
  * @property Carbon expires_at
  * // Raw Relations
- * @property int creator_id
- * @property int updater_id
+ * @property int|null creator_id
+ * @property int|null updater_id
  */
-class Discount extends BaseModel
+class Discount extends BaseModel implements DiscountInterface
 {
     use HasPackageFactory;
     use HasCreator;
@@ -119,11 +127,66 @@ class Discount extends BaseModel
 
     public function carts()
     {
-        return $this->belongsToMany(app('cart'))->withTimestamps();
+        return $this->belongsToMany(Cart::class)->withTimestamps();
     }
 
     public function orders()
     {
-        return $this->belongsToMany(app('order'));
+        return $this->belongsToMany(Order::class);
+    }
+
+    /******************************
+     * DiscountInterface Implementation
+     ******************************/
+
+    public static function findDeductionByCode(string $code): ?CartDeduction
+    {
+        return Discount::query()->available()->where('code', $code)->first();
+    }
+
+    public static function calculateCartDeduction(CartInterface $cart): Money
+    {
+        $discounts = Discount::query()->byCartId($cart->getId())->get();
+
+        return $discounts->reduce(function (Money $total, Discount $discount) use ($cart) {
+            $amount = Money::ofMinor($discount->amount, 'USD');
+
+            if ($amount->isPositive()) {
+                switch ($discount->applies_to) {
+                    case AppliesTo::ORDER():
+                        $total = $total->plus($amount);
+
+                        break;
+                    case AppliesTo::PARTICIPANT():
+                        $total = $total->plus($amount->multipliedBy($cart->getTotalParticipants()));
+
+                        break;
+                }
+            }
+
+            return $total;
+        }, Money::ofMinor(0, 'USD'));
+    }
+
+    public static function markCartDeductionsAsUsed(CartInterface $cart): void
+    {
+        // Does not apply to discount codes
+    }
+
+    public function applyToCart(CartInterface $cart)
+    {
+        // Check for supported discount type
+        if (in_array($this->applies_to->getValue(), array_keys(config('discounts.applications')))) {
+            $this->carts()->syncWithoutDetaching([$cart->getId()]);
+
+            return;
+        }
+
+        throw new UnsupportedDiscountTypeException($this->applies_to);
+    }
+
+    public function getCodesForCart(CartInterface $cart): array
+    {
+        return Discount::query()->byCartId($cart->getId())->pluck('code')->toArray();
     }
 }

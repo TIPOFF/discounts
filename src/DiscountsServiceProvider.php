@@ -7,10 +7,9 @@ namespace Tipoff\Discounts;
 use Illuminate\Support\Facades\Gate;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Tipoff\Discounts\Contracts\DiscountsService;
+use Tipoff\Checkout\Contracts\Models\DiscountInterface;
 use Tipoff\Discounts\Models\Discount;
 use Tipoff\Discounts\Policies\DiscountPolicy;
-use Tipoff\Discounts\Services\DiscountsServiceImplementation;
 
 class DiscountsServiceProvider extends PackageServiceProvider
 {
@@ -31,9 +30,7 @@ class DiscountsServiceProvider extends PackageServiceProvider
 
     public function registeringPackage()
     {
-        $this->app->singleton(DiscountsService::class, function () {
-            return new DiscountsServiceImplementation();
-        });
+        $this->app->bind(DiscountInterface::class, Discount::class);
 
         Gate::policy(Discount::class, DiscountPolicy::class);
     }
