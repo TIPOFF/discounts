@@ -10,3 +10,9 @@ All notable changes to `discounts` will be documented in this file.
 
 - migrations loaded via package
 - container based model resolution
+
+## 2.0.0 - 2021-02-11
+
+- model policies
+- model interfaces
+- nova resources
