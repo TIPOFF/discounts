@@ -178,6 +178,7 @@ class Discount extends BaseModel implements DiscountInterface
         // Check for supported discount type
         if (in_array($this->applies_to->getValue(), array_keys(config('discounts.applications')))) {
             $this->carts()->syncWithoutDetaching([$cart->getId()]);
+
             return;
         }
 
