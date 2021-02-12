@@ -172,6 +172,11 @@ class Discount extends BaseModel implements DiscountInterface
         // Does not apply to discount codes
     }
 
+    public static function getCodesForCart(CartInterface $cart): array
+    {
+        return Discount::query()->byCartId($cart->getId())->pluck('code')->toArray();
+    }
+
     public function applyToCart(CartInterface $cart)
     {
         // Check for supported discount type
@@ -182,10 +187,5 @@ class Discount extends BaseModel implements DiscountInterface
         }
 
         throw new UnsupportedDiscountTypeException($this->applies_to);
-    }
-
-    public function getCodesForCart(CartInterface $cart): array
-    {
-        return Discount::query()->byCartId($cart->getId())->pluck('code')->toArray();
     }
 }
