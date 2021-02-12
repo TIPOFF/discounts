@@ -20,7 +20,7 @@
         "nesbot/carbon": "^2.44",
         "tipoff/authorization": "^1.0.1",
         "tipoff/checkout": "^2.0.0",
-        "tipoff/support": "^1.2.3"
+        "tipoff/support": "1.2.5"
     },
     "require-dev": {
         "tipoff/test-support": "^1.0.2"
