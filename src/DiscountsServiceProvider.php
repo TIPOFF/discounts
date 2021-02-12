@@ -14,15 +14,18 @@ class DiscountsServiceProvider extends TipoffServiceProvider
 {
     public function configureTipoffPackage(TipoffPackage $package): void
     {
+        /**
+         * Tipoff specific methods should precede base methods to avoid Psalm error
+         */
         $package
-            ->name('discounts')
-            ->hasConfigFile()
-            ->hasTranslations()
             ->hasModelInterfaces([
                 DiscountInterface::class => Discount::class
             ])
             ->hasPolicies([
                 Discount::class => DiscountPolicy::class
-            ]);
+            ])
+            ->name('discounts')
+            ->hasConfigFile()
+            ->hasTranslations();
     }
 }
