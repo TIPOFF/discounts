@@ -25,7 +25,6 @@ class DiscountsServiceProvider extends TipoffServiceProvider
                 Discount::class => DiscountPolicy::class,
             ])
             ->name('discounts')
-            ->hasConfigFile()
-            ->hasTranslations();
+            ->hasConfigFile();
     }
 }
