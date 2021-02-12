@@ -19,10 +19,10 @@ class DiscountsServiceProvider extends TipoffServiceProvider
             ->hasConfigFile()
             ->hasTranslations()
             ->hasModelInterfaces([
-                DiscountInterface::class => Discount::class
+                DiscountInterface::class => Discount::class,
             ])
             ->hasPolicies([
-                Discount::class => DiscountPolicy::class
+                Discount::class => DiscountPolicy::class,
             ]);
     }
 }
