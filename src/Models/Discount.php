@@ -41,7 +41,6 @@ class Discount extends BaseModel implements DiscountInterface
     use HasCreator;
     use HasUpdater;
 
-    protected $guarded = ['id'];
     protected $casts = [
         'id' => 'integer',
         'name' => 'string',
