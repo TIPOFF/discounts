@@ -19,8 +19,8 @@
         "marc-mabe/php-enum": "^4.4",
         "nesbot/carbon": "^2.44",
         "tipoff/authorization": "^1.0.1",
-        "tipoff/checkout": "^2.0.0",
-        "tipoff/support": "1.2.5"
+        "tipoff/checkout": "dev-pdbreen/feature/additional-interfaces as 2.0.0",
+        "tipoff/support": "^1.2.6"
     },
     "require-dev": {
         "tipoff/test-support": "^1.0.2"
