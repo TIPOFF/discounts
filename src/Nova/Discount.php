@@ -19,10 +19,10 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
 use Tipoff\Discounts\Rules\DiscountCode;
 use Tipoff\Support\Enums\AppliesTo;
-use Tipoff\Support\Nova\Resource;
+use Tipoff\Support\Nova\BaseResource;
 use Tipoff\Support\Rules\Enum;
 
-class Discount extends Resource
+class Discount extends BaseResource
 {
     public static $model = \Tipoff\Discounts\Models\Discount::class;
 
@@ -79,7 +79,7 @@ class Discount extends Resource
             Boolean::make('Auto Apply'),
             Date::make('Expires At', 'expires_at')->nullable(),
 
-            HasMany::make('Orders', 'orders', app()->getAlias('order')),
+            HasMany::make('Orders', 'orders', nova('order')),
 
             new Panel('Data Fields', $this->dataFields()),
         ];
@@ -89,9 +89,9 @@ class Discount extends Resource
     {
         return [
             ID::make(),
-            BelongsTo::make('Created By', 'creator', app()->getAlias('user'))->exceptOnForms(),
+            BelongsTo::make('Created By', 'creator', nova('user'))->exceptOnForms(),
             DateTime::make('Created At')->exceptOnForms(),
-            BelongsTo::make('Updated By', 'updater', app()->getAlias('user'))->exceptOnForms(),
+            BelongsTo::make('Updated By', 'updater', nova('user'))->exceptOnForms(),
             DateTime::make('Updated At')->exceptOnForms(),
         ];
     }
