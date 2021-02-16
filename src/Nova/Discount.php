@@ -35,9 +35,14 @@ class Discount extends BaseResource
 
     public static $group = 'Operations Units';
 
+    /** @psalm-suppress UndefinedClass */
+    protected array $filterClassList = [
+
+    ];
+
     public function fieldsForIndex(NovaRequest $request)
     {
-        return [
+        return array_filter([
             ID::make()->sortable(),
             Text::make('Name')->sortable(),
             Text::make('Code')->sortable(),
@@ -45,12 +50,12 @@ class Discount extends BaseResource
             Number::make('Percent')->sortable(),
             Number::make('Max Usage')->sortable(),
             Date::make('Expires At', 'expires_at')->sortable(),
-        ];
+        ]);
     }
 
     public function fields(Request $request)
     {
-        return [
+        return array_filter([
             Text::make('Name'),
             Text::make('Code')
                 ->rules([new DiscountCode()]),
@@ -79,40 +84,18 @@ class Discount extends BaseResource
             Boolean::make('Auto Apply'),
             Date::make('Expires At', 'expires_at')->nullable(),
 
-            HasMany::make('Orders', 'orders', nova('order')),
+            nova('order') ? HasMany::make('Orders', 'orders', nova('order')) : null,
 
             new Panel('Data Fields', $this->dataFields()),
-        ];
+        ]);
     }
 
-    protected function dataFields()
+    protected function dataFields(): array
     {
-        return [
-            ID::make(),
-            BelongsTo::make('Created By', 'creator', nova('user'))->exceptOnForms(),
-            DateTime::make('Created At')->exceptOnForms(),
-            BelongsTo::make('Updated By', 'updater', nova('user'))->exceptOnForms(),
-            DateTime::make('Updated At')->exceptOnForms(),
-        ];
-    }
-
-    public function cards(Request $request)
-    {
-        return [];
-    }
-
-    public function filters(Request $request)
-    {
-        return [];
-    }
-
-    public function lenses(Request $request)
-    {
-        return [];
-    }
-
-    public function actions(Request $request)
-    {
-        return [];
+        return array_merge(
+            parent::dataFields(),
+            $this->creatorDataFields(),
+            $this->updaterDataFields(),
+        );
     }
 }
