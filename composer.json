@@ -20,16 +20,15 @@
         "nesbot/carbon": "^2.44",
         "tipoff/authorization": "^1.0.1",
         "tipoff/checkout": "^2.0.1",
-        "tipoff/support": "^1.2.7"
+        "tipoff/support": "^1.3.0"
     },
     "require-dev": {
-        "tipoff/test-support": "^1.0.3"
+        "tipoff/test-support": "^1.0.5"
     },
     "autoload": {
         "psr-4": {
             "Tipoff\\Discounts\\": "src",
-            "Tipoff\\Discounts\\Database\\Factories\\": "database/factories",
-            "Tipoff\\Discounts\\Database\\Seeders\\": "database/seeders"
+            "Tipoff\\Discounts\\Database\\Factories\\": "database/factories"
         }
     },
     "autoload-dev": {

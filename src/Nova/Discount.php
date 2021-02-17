@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Tipoff\Discounts\Nova;
 
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\Currency;
 use Laravel\Nova\Fields\Date;
-use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
@@ -19,10 +17,10 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
 use Tipoff\Discounts\Rules\DiscountCode;
 use Tipoff\Support\Enums\AppliesTo;
-use Tipoff\Support\Nova\Resource;
+use Tipoff\Support\Nova\BaseResource;
 use Tipoff\Support\Rules\Enum;
 
-class Discount extends Resource
+class Discount extends BaseResource
 {
     public static $model = \Tipoff\Discounts\Models\Discount::class;
 
@@ -35,9 +33,14 @@ class Discount extends Resource
 
     public static $group = 'Operations Units';
 
+    /** @psalm-suppress UndefinedClass */
+    protected array $filterClassList = [
+
+    ];
+
     public function fieldsForIndex(NovaRequest $request)
     {
-        return [
+        return array_filter([
             ID::make()->sortable(),
             Text::make('Name')->sortable(),
             Text::make('Code')->sortable(),
@@ -45,12 +48,12 @@ class Discount extends Resource
             Number::make('Percent')->sortable(),
             Number::make('Max Usage')->sortable(),
             Date::make('Expires At', 'expires_at')->sortable(),
-        ];
+        ]);
     }
 
     public function fields(Request $request)
     {
-        return [
+        return array_filter([
             Text::make('Name'),
             Text::make('Code')
                 ->rules([new DiscountCode()]),
@@ -79,40 +82,18 @@ class Discount extends Resource
             Boolean::make('Auto Apply'),
             Date::make('Expires At', 'expires_at')->nullable(),
 
-            HasMany::make('Orders', 'orders', app()->getAlias('order')),
+            nova('order') ? HasMany::make('Orders', 'orders', nova('order')) : null,
 
             new Panel('Data Fields', $this->dataFields()),
-        ];
+        ]);
     }
 
-    protected function dataFields()
+    protected function dataFields(): array
     {
-        return [
-            ID::make(),
-            BelongsTo::make('Created By', 'creator', app()->getAlias('user'))->exceptOnForms(),
-            DateTime::make('Created At')->exceptOnForms(),
-            BelongsTo::make('Updated By', 'updater', app()->getAlias('user'))->exceptOnForms(),
-            DateTime::make('Updated At')->exceptOnForms(),
-        ];
-    }
-
-    public function cards(Request $request)
-    {
-        return [];
-    }
-
-    public function filters(Request $request)
-    {
-        return [];
-    }
-
-    public function lenses(Request $request)
-    {
-        return [];
-    }
-
-    public function actions(Request $request)
-    {
-        return [];
+        return array_merge(
+            parent::dataFields(),
+            $this->creatorDataFields(),
+            $this->updaterDataFields(),
+        );
     }
 }
