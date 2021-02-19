@@ -24,6 +24,9 @@ class DiscountsServiceProvider extends TipoffServiceProvider
             ->hasPolicies([
                 Discount::class => DiscountPolicy::class,
             ])
+            ->hasNovaResources([
+                \Tipoff\Discounts\Nova\Discount::class,
+            ])
             ->name('discounts')
             ->hasConfigFile();
     }
