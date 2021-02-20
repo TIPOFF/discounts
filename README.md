@@ -19,6 +19,18 @@ You can publish the config file with:
 php artisan vendor:publish --provider="Tipoff\Discounts\DiscountsServiceProvider" --tag="discounts-config"
 ```
 
+## Models
+
+We include the following model:
+
+**List of Models**
+
+- Discount
+
+For each of these models, this package implements an [authorization policy](https://laravel.com/docs/8.x/authorization) that extends the roles and permissions approach of the [tipoff/authorization](https://github.com/tipoff/authorization) package. The policies for each model in this package are registered through the package and do not need to be registered manually.
+
+The models also have [Laravel Nova resources](https://nova.laravel.com/docs/3.0/resources/) in this package and they are also registered through the package and do not need to be registered manually.
+
 #### Registering the Nova resources
 
 If you would like to use the Nova resources included with this package, you need to register it manually in your `NovaServiceProvider` in the `boot` method.
