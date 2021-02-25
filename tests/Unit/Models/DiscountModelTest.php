@@ -12,6 +12,7 @@ use Tipoff\Checkout\Models\Cart;
 use Tipoff\Checkout\Models\Order;
 use Tipoff\Discounts\Exceptions\UnsupportedDiscountTypeException;
 use Tipoff\Discounts\Models\Discount;
+use Tipoff\Discounts\Tests\Support\Models\TestSellable;
 use Tipoff\Discounts\Tests\TestCase;
 use Tipoff\Support\Enums\AppliesTo;
 use Tipoff\TestSupport\Models\User;
@@ -246,7 +247,7 @@ class DiscountModelTest extends TestCase
             'applies_to' => AppliesTo::ORDER(),
         ]);
 
-        $result = Discount::findDeductionByCode('TESTCODE');
+        $result = Discount::findByCode('TESTCODE');
         $this->assertNotNull($result);
         $this->assertEquals($discount->id, $result->getId());
     }
@@ -272,7 +273,7 @@ class DiscountModelTest extends TestCase
     /** @test */
     public function find_unknown_code()
     {
-        $result = Discount::findDeductionByCode('TESTCODE');
+        $result = Discount::findByCode('TESTCODE');
         $this->assertNull($result);
     }
 
@@ -286,7 +287,7 @@ class DiscountModelTest extends TestCase
             'applies_to' => AppliesTo::ORDER(),
         ]);
 
-        $result = Discount::findDeductionByCode('TESTCODE');
+        $result = Discount::findByCode('TESTCODE');
         $this->assertNull($result);
     }
 
@@ -307,110 +308,7 @@ class DiscountModelTest extends TestCase
 
         $discount->applyToCart($cart);
     }
-
-    /** @test */
-    public function calculate_discount_with_no_discounts()
-    {
-        $cart = Cart::factory()->create();
-
-        $result = Discount::calculateCartDeduction($cart);
-        $this->assertEquals(0, $result->getUnscaledAmount()->toInt());
-    }
-
-    /** @test */
-    public function calculate_discount_with_order_discounts()
-    {
-        /** @var Discount $discount */
-        $discount = Discount::factory()->amount()->expired(false)->create([
-            'code' => 'TESTCODE',
-            'amount' => 1000,
-            'applies_to' => AppliesTo::ORDER(),
-        ]);
-
-        $cart = Cart::factory()->create();
-
-        $discount->applyToCart($cart);
-
-        $result = Discount::calculateCartDeduction($cart);
-        $this->assertEquals(1000, $result->getUnscaledAmount()->toInt());
-    }
-
-    /** @test */
-    public function calculate_discount_with_particpant_discounts()
-    {
-        /** @var Discount $discount */
-        $discount = Discount::factory()->amount()->expired(false)->create([
-            'code' => 'TESTCODE',
-            'amount' => 1000,
-            'applies_to' => AppliesTo::PARTICIPANT(),
-        ]);
-
-        $cart = Cart::factory()->create();
-        $cart = \Mockery::mock($cart)->makePartial();
-        $cart->shouldReceive('getTotalParticipants')->andReturn(4);
-
-        $discount->applyToCart($cart);
-
-        $result = Discount::calculateCartDeduction($cart);
-        $this->assertEquals(4000, $result->getUnscaledAmount()->toInt());
-    }
-
-    /** @test */
-    public function calculate_discount_with_multiple_discounts()
-    {
-        /** @var Discount $orderCode */
-        $orderCode = Discount::factory()->amount()->expired(false)->create([
-            'code' => 'CODE1',
-            'amount' => 1000,
-            'applies_to' => AppliesTo::ORDER(),
-        ]);
-
-        /** @var Discount $participantCode */
-        $participantCode = Discount::factory()->amount()->expired(false)->create([
-            'code' => 'CODE2',
-            'amount' => 1000,
-            'applies_to' => AppliesTo::PARTICIPANT(),
-        ]);
-
-        $cart = Cart::factory()->create();
-        $cart = \Mockery::mock($cart)->makePartial();
-        $cart->shouldReceive('getTotalParticipants')->andReturn(4);
-
-        $orderCode->applyToCart($cart);
-        $participantCode->applyToCart($cart);
-
-        $result = Discount::calculateCartDeduction($cart);
-        $this->assertEquals(5000, $result->getUnscaledAmount()->toInt());
-    }
-
-    /** @test */
-    public function mark_deductions_as_used()
-    {
-        /** @var Discount $orderCode */
-        $orderCode = Discount::factory()->amount()->expired(false)->create([
-            'code' => 'CODE1',
-            'amount' => 1000,
-            'applies_to' => AppliesTo::ORDER(),
-        ]);
-
-        /** @var Discount $participantCode */
-        $participantCode = Discount::factory()->amount()->expired(false)->create([
-            'code' => 'CODE2',
-            'amount' => 1000,
-            'applies_to' => AppliesTo::PARTICIPANT(),
-        ]);
-
-        $cart = Cart::factory()->create();
-
-        $orderCode->applyToCart($cart);
-        $participantCode->applyToCart($cart);
-
-        // Currently does nothing
-        Discount::markCartDeductionsAsUsed($cart);
-
-        $this->assertTrue(true);
-    }
-
+    
     /** @test */
     public function get_codes_for_cart()
     {
