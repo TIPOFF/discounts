@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tipoff\Discounts\Services\Discount;
 
-
 use Tipoff\Discounts\Models\Discount;
 use Tipoff\Support\Contracts\Checkout\CartInterface;
 use Tipoff\Support\Contracts\Checkout\CartItemInterface;

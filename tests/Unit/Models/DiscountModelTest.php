@@ -12,7 +12,6 @@ use Tipoff\Checkout\Models\Cart;
 use Tipoff\Checkout\Models\Order;
 use Tipoff\Discounts\Exceptions\UnsupportedDiscountTypeException;
 use Tipoff\Discounts\Models\Discount;
-use Tipoff\Discounts\Tests\Support\Models\TestSellable;
 use Tipoff\Discounts\Tests\TestCase;
 use Tipoff\Support\Enums\AppliesTo;
 use Tipoff\TestSupport\Models\User;

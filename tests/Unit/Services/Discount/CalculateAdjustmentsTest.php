@@ -4,18 +4,12 @@ declare(strict_types=1);
 
 namespace Tipoff\Discounts\Tests\Unit\Services\Discount;
 
-use Assert\LazyAssertionException;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tipoff\Checkout\Models\Cart;
-use Tipoff\Checkout\Models\Order;
-use Tipoff\Discounts\Exceptions\UnsupportedDiscountTypeException;
 use Tipoff\Discounts\Models\Discount;
 use Tipoff\Discounts\Tests\Support\Models\TestSellable;
 use Tipoff\Discounts\Tests\TestCase;
 use Tipoff\Support\Enums\AppliesTo;
-use Tipoff\TestSupport\Models\User;
 
 class CalculateAdjustmentsTest extends TestCase
 {

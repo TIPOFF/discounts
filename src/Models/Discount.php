@@ -13,7 +13,6 @@ use Tipoff\Discounts\Exceptions\UnsupportedDiscountTypeException;
 use Tipoff\Discounts\Services\Discount\CalculateAdjustments;
 use Tipoff\Support\Casts\Enum;
 use Tipoff\Support\Contracts\Checkout\CartInterface;
-use Tipoff\Support\Contracts\Checkout\CartItemInterface;
 use Tipoff\Support\Contracts\Checkout\Discounts\DiscountInterface;
 use Tipoff\Support\Enums\AppliesTo;
 use Tipoff\Support\Models\BaseModel;
