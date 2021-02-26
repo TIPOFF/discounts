@@ -14,8 +14,7 @@ class CalculateAdjustments
 {
     public function __invoke(CartInterface $cart): void
     {
-        // TODO - include all auto-apply
-        $discounts = Discount::query()->byCartId($cart->getId())->get();
+        $discounts = Discount::query()->byCartId($cart->getId(), true)->get();
 
         $discounts
             ->sort(function (Discount $discount) {
@@ -23,9 +22,15 @@ class CalculateAdjustments
                 return $discount->amount > 0 ? 0 : 1;
             })
             ->each(function (Discount $discount) use ($cart) {
-                $cart->getItems()->each(function (CartItemInterface $cartItem) use ($discount) {
-                    $this->calculateItemDiscount($cartItem, $discount);
-                });
+                $cart->getItems()
+                    ->sortByDesc(function (CartItemInterface $cartItem) {
+                        // Sort ensures limited use discounts apply to most expensive item
+                        return $cartItem->getAmount()->getDiscountedAmount();
+                    })
+                    ->take($discount->max_usage)    // Enforce usage limitations
+                    ->each(function (CartItemInterface $cartItem) use ($discount) {
+                        $this->calculateItemDiscount($cartItem, $discount);
+                    });
             });
     }
 

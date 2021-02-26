@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Tipoff\Discounts;
 
+use Tipoff\Discounts\Listeners\OrderCreatedListener;
 use Tipoff\Discounts\Models\Discount;
 use Tipoff\Discounts\Policies\DiscountPolicy;
 use Tipoff\Support\Contracts\Checkout\Discounts\DiscountInterface;
+use Tipoff\Support\Events\Checkout\OrderCreated;
 use Tipoff\Support\TipoffPackage;
 use Tipoff\Support\TipoffServiceProvider;
 
@@ -26,6 +28,11 @@ class DiscountsServiceProvider extends TipoffServiceProvider
             ])
             ->hasNovaResources([
                 \Tipoff\Discounts\Nova\Discount::class,
+            ])
+            ->hasEvents([
+                OrderCreated::class => [
+                    OrderCreatedListener::class,
+                ],
             ])
             ->name('discounts')
             ->hasConfigFile();

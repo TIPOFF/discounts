@@ -7,23 +7,23 @@ namespace Tipoff\Discounts\Tests\Unit\Services\Discount;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tipoff\Checkout\Models\Cart;
 use Tipoff\Discounts\Models\Discount;
-use Tipoff\Discounts\Tests\Support\Models\TestSellable;
 use Tipoff\Discounts\Tests\TestCase;
 use Tipoff\Support\Enums\AppliesTo;
+use Tipoff\TestSupport\Models\TestSellableBooking;
 
 class CalculateAdjustmentsTest extends TestCase
 {
     use DatabaseTransactions;
 
-    private TestSellable $sellable;
+    private TestSellableBooking $sellable;
     private Cart $cart;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        TestSellable::createTable();
-        $this->sellable = TestSellable::factory()->create();
+        TestSellableBooking::createTable();
+        $this->sellable = TestSellableBooking::factory()->create();
         $this->cart = Cart::factory()->create();
     }
 
@@ -47,9 +47,8 @@ class CalculateAdjustmentsTest extends TestCase
             [2500, 1],
         ], function ($cart) {
             /** @var Discount $discount */
-            $discount = Discount::factory()->amount()->expired(false)->create([
+            $discount = Discount::factory()->amount(1000)->expired(false)->create([
                 'code' => 'TESTCODE',
-                'amount' => 1000,
                 'applies_to' => AppliesTo::ORDER(),
             ]);
 
@@ -74,9 +73,9 @@ class CalculateAdjustmentsTest extends TestCase
             [3500, 1],
         ], function ($cart) {
             /** @var Discount $discount */
-            $discount = Discount::factory()->amount()->expired(false)->create([
+            $discount = Discount::factory()->amount(1000)->expired(false)->create([
+                'max_usage' => 2,
                 'code' => 'TESTCODE',
-                'amount' => 1000,
                 'applies_to' => AppliesTo::ORDER(),
             ]);
 
@@ -98,15 +97,45 @@ class CalculateAdjustmentsTest extends TestCase
     }
 
     /** @test */
+    public function calculate_discount_with_limited_usage()
+    {
+        $this->withCart([
+            [2000, 1],
+            [3500, 1],
+        ], function ($cart) {
+            /** @var Discount $discount */
+            $discount = Discount::factory()->percent(50)->expired(false)->create([
+                'max_usage' => 1,
+                'code' => 'TESTCODE',
+                'applies_to' => AppliesTo::ORDER(),
+            ]);
+
+            $discount->applyToCart($this->cart);
+            Discount::calculateAdjustments($cart);
+        });
+
+        $cart = $this->cart;
+        $this->assertEquals(1750, $cart->getItemAmount()->getDiscounts());
+        $this->assertEquals(3750, $cart->getItemAmount()->getDiscountedAmount());
+
+        $cartItem = $cart->findItem($this->sellable, 'item-0');
+        $this->assertEquals(0, $cartItem->getAmount()->getDiscounts());
+        $this->assertEquals(2000, $cartItem->getAmount()->getDiscountedAmount());
+
+        $cartItem = $cart->findItem($this->sellable, 'item-1');
+        $this->assertEquals(1750, $cartItem->getAmount()->getDiscounts());
+        $this->assertEquals(1750, $cartItem->getAmount()->getDiscountedAmount());
+    }
+
+    /** @test */
     public function calculate_percent_discount()
     {
         $this->withCart([
             [2500, 1],
         ], function ($cart) {
             /** @var Discount $discount */
-            $discount = Discount::factory()->percent()->expired(false)->create([
+            $discount = Discount::factory()->percent(10)->expired(false)->create([
                 'code' => 'TESTCODE',
-                'percent' => 10,
                 'applies_to' => AppliesTo::ORDER(),
             ]);
 
@@ -124,24 +153,50 @@ class CalculateAdjustmentsTest extends TestCase
     }
 
     /** @test */
+    public function active_auto_apply_discounts_are_included()
+    {
+        $this->withCart([
+            [2500, 1],
+        ], function ($cart) {
+            Discount::factory()->amount(500)->autoApply()->expired(false)->create([
+                'code' => 'CODE1',
+                'applies_to' => AppliesTo::ORDER(),
+            ]);
+
+            Discount::factory()->amount(500)->autoApply()->expired()->create([
+                'code' => 'CODE2',
+                'applies_to' => AppliesTo::ORDER(),
+            ]);
+
+            Discount::calculateAdjustments($cart);
+        });
+
+        $cart = $this->cart;
+        $this->assertEquals(500, $cart->getItemAmount()->getDiscounts());
+        $this->assertEquals(2000, $cart->getItemAmount()->getDiscountedAmount());
+
+        $cartItem = $cart->findItem($this->sellable, 'item-0');
+        $this->assertEquals(500, $cartItem->getAmount()->getDiscounts());
+        $this->assertEquals(2000, $cartItem->getAmount()->getDiscountedAmount());
+    }
+
+    /** @test */
     public function ensure_discount_is_capped()
     {
         $this->withCart([
             [2500, 1],
         ], function ($cart) {
             /** @var Discount $code1 */
-            $code1 = Discount::factory()->amount()->expired(false)->create([
+            $code1 = Discount::factory()->amount(2000)->expired(false)->create([
                 'code' => 'CODE1',
-                'amount' => 2000,
                 'applies_to' => AppliesTo::ORDER(),
             ]);
 
             $code1->applyToCart($this->cart);
 
             /** @var Discount $code2 */
-            $code2 = Discount::factory()->amount()->expired(false)->create([
+            $code2 = Discount::factory()->amount(2000)->expired(false)->create([
                 'code' => 'CODE2',
-                'amount' => 2000,
                 'applies_to' => AppliesTo::ORDER(),
             ]);
 
@@ -165,18 +220,16 @@ class CalculateAdjustmentsTest extends TestCase
             [2500, 1],
         ], function ($cart) {
             /** @var Discount $code1 */
-            $code1 = Discount::factory()->amount()->expired(false)->create([
+            $code1 = Discount::factory()->amount(1500)->expired(false)->create([
                 'code' => 'CODE1',
-                'amount' => 1500,
                 'applies_to' => AppliesTo::ORDER(),
             ]);
 
             $code1->applyToCart($this->cart);
 
             /** @var Discount $code2 */
-            $code2 = Discount::factory()->percent()->expired(false)->create([
+            $code2 = Discount::factory()->percent(50)->expired(false)->create([
                 'code' => 'CODE2',
-                'percent' => 50,
                 'applies_to' => AppliesTo::ORDER(),
             ]);
 
@@ -200,18 +253,16 @@ class CalculateAdjustmentsTest extends TestCase
             [2000, 1],
         ], function ($cart) {
             /** @var Discount $code1 */
-            $code1 = Discount::factory()->percent()->expired(false)->create([
+            $code1 = Discount::factory()->percent(50)->expired(false)->create([
                 'code' => 'CODE1',
-                'percent' => 50,
                 'applies_to' => AppliesTo::ORDER(),
             ]);
 
             $code1->applyToCart($this->cart);
 
             /** @var Discount $code2 */
-            $code2 = Discount::factory()->percent()->expired(false)->create([
+            $code2 = Discount::factory()->percent(50)->expired(false)->create([
                 'code' => 'CODE2',
-                'percent' => 50,
                 'applies_to' => AppliesTo::ORDER(),
             ]);
 
@@ -231,13 +282,13 @@ class CalculateAdjustmentsTest extends TestCase
     /** @test */
     public function calculate_discount_with_participant_discounts()
     {
+        $this->sellable->participants = 4;
         $this->withCart([
             [5500, 1],
         ], function ($cart) {
             /** @var Discount $discount */
-            $discount = Discount::factory()->amount()->expired(false)->create([
+            $discount = Discount::factory()->amount(1000)->expired(false)->create([
                 'code' => 'TESTCODE',
-                'amount' => 1000,
                 'applies_to' => AppliesTo::PARTICIPANT(),
             ]);
 
@@ -258,20 +309,19 @@ class CalculateAdjustmentsTest extends TestCase
     /** @test */
     public function calculate_discount_with_multiple_discounts()
     {
+        $this->sellable->participants = 4;
         $this->withCart([
             [5500, 1],
         ], function ($cart) {
             /** @var Discount $orderCode */
-            $orderCode = Discount::factory()->amount()->expired(false)->create([
+            $orderCode = Discount::factory()->amount(1000)->expired(false)->create([
                 'code' => 'CODE1',
-                'amount' => 1000,
                 'applies_to' => AppliesTo::ORDER(),
             ]);
 
             /** @var Discount $participantCode */
-            $participantCode = Discount::factory()->amount()->expired(false)->create([
+            $participantCode = Discount::factory()->amount(1000)->expired(false)->create([
                 'code' => 'CODE2',
-                'amount' => 1000,
                 'applies_to' => AppliesTo::PARTICIPANT(),
             ]);
 

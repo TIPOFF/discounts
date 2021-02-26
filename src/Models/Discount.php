@@ -90,10 +90,22 @@ class Discount extends BaseModel implements DiscountInterface
         return $this->scopeValidAt($query, new Carbon('now'));
     }
 
-    public function scopeByCartId(Builder $query, int $cartId): Builder
+    public function scopeIsActiveAutoApply(Builder $query): Builder
     {
-        return $query->whereHas('carts', function ($q) use ($cartId) {
-            $q->where('id', $cartId);
+        return $this->scopeAvailable($query)->where('auto_apply', '=', true);
+    }
+
+    public function scopeByCartId(Builder $query, int $cartId, bool $autoApply = false): Builder
+    {
+        return $query->where(function (Builder $query) use ($cartId, $autoApply) {
+            $query->whereHas('carts', function ($q) use ($cartId) {
+                $q->where('id', $cartId);
+            });
+            if ($autoApply) {
+                $query->orWhere(function (Builder $query) {
+                    $query->isActiveAutoApply();
+                });
+            }
         });
     }
 
