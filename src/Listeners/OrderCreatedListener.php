@@ -16,6 +16,7 @@ class OrderCreatedListener
     {
         /** @var Order $order */
         $order = $event->order;
+        /** @psalm-suppress UndefinedMagicPropertyFetch */
         $discounts = $this->getDiscountsApplied($order->cart);
         $this->copyDiscountsToOrder($order, $discounts);
     }
