@@ -11,7 +11,6 @@ use Tipoff\Discounts\Listeners\OrderCreatedListener;
 use Tipoff\Discounts\Models\Discount;
 use Tipoff\Discounts\Tests\TestCase;
 use Tipoff\Support\Events\Checkout\OrderCreated;
-use Tipoff\TestSupport\Models\User;
 
 class OrderCreatedListenerTest extends TestCase
 {
