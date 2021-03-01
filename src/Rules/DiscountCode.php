@@ -23,6 +23,6 @@ class DiscountCode implements Rule
      */
     public function message()
     {
-        return (string) 'A discount code cannot be 9 characters long.';
+        return 'A discount code cannot be 9 characters long.';
     }
 }
