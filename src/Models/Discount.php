@@ -43,7 +43,7 @@ class Discount extends BaseModel implements DiscountInterface
     protected $casts = [
         'id' => 'integer',
         'name' => 'string',
-        'code' => 'string', // TODO - use custom class to represent DiscountCode?
+        'code' => 'string',
         'amount' => 'integer',
         'percent' => 'float',
         'applies_to' => Enum::class.':'.AppliesTo::class,
@@ -60,9 +60,7 @@ class Discount extends BaseModel implements DiscountInterface
 
         static::saving(function (Discount $discount) {
             $discount->code = strtoupper($discount->code);
-            if (empty($discount->max_usage)) {
-                $discount->max_usage = 1;
-            }
+            $discount->max_usage = $discount->max_usage ?: 1;
 
             Assert::lazy()
                 ->that(strlen($discount->code), 'code')->notEq(9)
@@ -71,6 +69,22 @@ class Discount extends BaseModel implements DiscountInterface
                 ->verifyNow();
         });
     }
+
+    //region RELATIONSHIPS
+
+    public function carts()
+    {
+        return $this->belongsToMany(Cart::class)->withTimestamps();
+    }
+
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class);
+    }
+
+    //endregion
+
+    //region SCOPES
 
     /**
      * Scope discounts to valid ones.
@@ -116,6 +130,8 @@ class Discount extends BaseModel implements DiscountInterface
         });
     }
 
+    //endregion
+
     /**
      * Validate is current discount is available at specified date.
      *
@@ -133,16 +149,6 @@ class Discount extends BaseModel implements DiscountInterface
         }
 
         return true;
-    }
-
-    public function carts()
-    {
-        return $this->belongsToMany(Cart::class)->withTimestamps();
-    }
-
-    public function orders()
-    {
-        return $this->belongsToMany(Order::class);
     }
 
     //region INTERFACE

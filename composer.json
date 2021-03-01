@@ -23,7 +23,7 @@
         "tipoff/support": "^1.4.7"
     },
     "require-dev": {
-        "tipoff/test-support": "^1.0.6"
+        "tipoff/test-support": "^1.0.7"
     },
     "autoload": {
         "psr-4": {
