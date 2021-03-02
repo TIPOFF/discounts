@@ -14,7 +14,7 @@ use Tipoff\Discounts\Exceptions\UnsupportedDiscountTypeException;
 use Tipoff\Discounts\Models\Discount;
 use Tipoff\Discounts\Tests\TestCase;
 use Tipoff\Support\Enums\AppliesTo;
-use Tipoff\TestSupport\Models\User;
+use Tipoff\Authorization\Models\User;
 
 class DiscountModelTest extends TestCase
 {

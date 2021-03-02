@@ -25,7 +25,7 @@ class CalculateAdjustments
                 $cart->getItems()
                     ->sortByDesc(function (CartItemInterface $cartItem) {
                         // Sort ensures limited use discounts apply to most expensive item
-                        return $cartItem->getAmount()->getDiscountedAmount();
+                        return $cartItem->getAmountTotal()->getDiscountedAmount();
                     })
                     ->take($discount->max_usage)    // Enforce usage limitations
                     ->each(function (CartItemInterface $cartItem) use ($discount) {
@@ -37,18 +37,18 @@ class CalculateAdjustments
     protected function calculateItemDiscount(CartItemInterface $cartItem, Discount $discount): self
     {
         $sellable = $cartItem->getSellable();
-        $amount = $cartItem->getAmount();
+        $amount = $cartItem->getAmountEach();
         $discountAmount = 0;
 
         if ($discount->percent) {
             $discountAmount = ($amount->getDiscountedAmount() * $discount->percent) / 100;
         } elseif ($discount->applies_to === AppliesTo::ORDER()) {
-            $discountAmount = $discount->amount;
+            $discountAmount = ($discount->amount / $cartItem->getQuantity());
         } elseif ($discount->applies_to === AppliesTo::PARTICIPANT() && $sellable instanceof Booking) {
             $discountAmount = $discount->amount * $sellable->getParticipants();
         }
 
-        $cartItem->setAmount($amount->addDiscounts((int) $discountAmount));
+        $cartItem->setAmountEach($amount->addDiscounts((int) $discountAmount));
 
         return $this;
     }

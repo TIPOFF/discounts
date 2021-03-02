@@ -7,7 +7,7 @@ namespace Tipoff\Discounts\Tests\Feature\Nova;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tipoff\Discounts\Models\Discount;
 use Tipoff\Discounts\Tests\TestCase;
-use Tipoff\TestSupport\Models\User;
+use Tipoff\Authorization\Models\User;
 
 class DiscountResourceTest extends TestCase
 {
@@ -18,7 +18,7 @@ class DiscountResourceTest extends TestCase
     {
         Discount::factory()->count(4)->create();
 
-        $this->actingAs(User::factory()->create());
+        $this->actingAs(self::createPermissionedUser('view discounts', true));
 
         $response = $this->getJson('nova-api/discounts')
             ->assertOk();

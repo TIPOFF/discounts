@@ -37,7 +37,7 @@ class CalculateAdjustmentsTest extends TestCase
         });
 
         $cart = $this->cart;
-        $this->assertEquals(0, $cart->getItemAmount()->getDiscounts());
+        $this->assertEquals(0, $cart->getItemAmountTotal()->getDiscounts());
     }
 
     /** @test */
@@ -57,12 +57,12 @@ class CalculateAdjustmentsTest extends TestCase
         });
 
         $cart = $this->cart;
-        $this->assertEquals(1000, $cart->getItemAmount()->getDiscounts());
-        $this->assertEquals(1500, $cart->getItemAmount()->getDiscountedAmount());
+        $this->assertEquals(1000, $cart->getItemAmountTotal()->getDiscounts());
+        $this->assertEquals(1500, $cart->getItemAmountTotal()->getDiscountedAmount());
 
         $cartItem = $cart->findItem($this->sellable, 'item-0');
-        $this->assertEquals(1000, $cartItem->getAmount()->getDiscounts());
-        $this->assertEquals(1500, $cartItem->getAmount()->getDiscountedAmount());
+        $this->assertEquals(1000, $cartItem->getAmountEach()->getDiscounts());
+        $this->assertEquals(1500, $cartItem->getAmountEach()->getDiscountedAmount());
     }
 
     /** @test */
@@ -84,16 +84,16 @@ class CalculateAdjustmentsTest extends TestCase
         });
 
         $cart = $this->cart;
-        $this->assertEquals(2000, $cart->getItemAmount()->getDiscounts());
-        $this->assertEquals(4000, $cart->getItemAmount()->getDiscountedAmount());
+        $this->assertEquals(2000, $cart->getItemAmountTotal()->getDiscounts());
+        $this->assertEquals(4000, $cart->getItemAmountTotal()->getDiscountedAmount());
 
         $cartItem = $cart->findItem($this->sellable, 'item-0');
-        $this->assertEquals(1000, $cartItem->getAmount()->getDiscounts());
-        $this->assertEquals(1500, $cartItem->getAmount()->getDiscountedAmount());
+        $this->assertEquals(1000, $cartItem->getAmountEach()->getDiscounts());
+        $this->assertEquals(1500, $cartItem->getAmountEach()->getDiscountedAmount());
 
         $cartItem = $cart->findItem($this->sellable, 'item-1');
-        $this->assertEquals(1000, $cartItem->getAmount()->getDiscounts());
-        $this->assertEquals(2500, $cartItem->getAmount()->getDiscountedAmount());
+        $this->assertEquals(1000, $cartItem->getAmountEach()->getDiscounts());
+        $this->assertEquals(2500, $cartItem->getAmountEach()->getDiscountedAmount());
     }
 
     /** @test */
@@ -115,16 +115,16 @@ class CalculateAdjustmentsTest extends TestCase
         });
 
         $cart = $this->cart;
-        $this->assertEquals(1750, $cart->getItemAmount()->getDiscounts());
-        $this->assertEquals(3750, $cart->getItemAmount()->getDiscountedAmount());
+        $this->assertEquals(1750, $cart->getItemAmountTotal()->getDiscounts());
+        $this->assertEquals(3750, $cart->getItemAmountTotal()->getDiscountedAmount());
 
         $cartItem = $cart->findItem($this->sellable, 'item-0');
-        $this->assertEquals(0, $cartItem->getAmount()->getDiscounts());
-        $this->assertEquals(2000, $cartItem->getAmount()->getDiscountedAmount());
+        $this->assertEquals(0, $cartItem->getAmountEach()->getDiscounts());
+        $this->assertEquals(2000, $cartItem->getAmountEach()->getDiscountedAmount());
 
         $cartItem = $cart->findItem($this->sellable, 'item-1');
-        $this->assertEquals(1750, $cartItem->getAmount()->getDiscounts());
-        $this->assertEquals(1750, $cartItem->getAmount()->getDiscountedAmount());
+        $this->assertEquals(1750, $cartItem->getAmountEach()->getDiscounts());
+        $this->assertEquals(1750, $cartItem->getAmountEach()->getDiscountedAmount());
     }
 
     /** @test */
@@ -144,12 +144,12 @@ class CalculateAdjustmentsTest extends TestCase
         });
 
         $cart = $this->cart;
-        $this->assertEquals(250, $cart->getItemAmount()->getDiscounts());
-        $this->assertEquals(2250, $cart->getItemAmount()->getDiscountedAmount());
+        $this->assertEquals(250, $cart->getItemAmountTotal()->getDiscounts());
+        $this->assertEquals(2250, $cart->getItemAmountTotal()->getDiscountedAmount());
 
         $cartItem = $cart->findItem($this->sellable, 'item-0');
-        $this->assertEquals(250, $cartItem->getAmount()->getDiscounts());
-        $this->assertEquals(2250, $cartItem->getAmount()->getDiscountedAmount());
+        $this->assertEquals(250, $cartItem->getAmountEach()->getDiscounts());
+        $this->assertEquals(2250, $cartItem->getAmountEach()->getDiscountedAmount());
     }
 
     /** @test */
@@ -172,12 +172,12 @@ class CalculateAdjustmentsTest extends TestCase
         });
 
         $cart = $this->cart;
-        $this->assertEquals(500, $cart->getItemAmount()->getDiscounts());
-        $this->assertEquals(2000, $cart->getItemAmount()->getDiscountedAmount());
+        $this->assertEquals(500, $cart->getItemAmountTotal()->getDiscounts());
+        $this->assertEquals(2000, $cart->getItemAmountTotal()->getDiscountedAmount());
 
         $cartItem = $cart->findItem($this->sellable, 'item-0');
-        $this->assertEquals(500, $cartItem->getAmount()->getDiscounts());
-        $this->assertEquals(2000, $cartItem->getAmount()->getDiscountedAmount());
+        $this->assertEquals(500, $cartItem->getAmountEach()->getDiscounts());
+        $this->assertEquals(2000, $cartItem->getAmountEach()->getDiscountedAmount());
     }
 
     /** @test */
@@ -205,12 +205,12 @@ class CalculateAdjustmentsTest extends TestCase
         });
 
         $cart = $this->cart;
-        $this->assertEquals(2500, $cart->getItemAmount()->getDiscounts());
-        $this->assertEquals(0, $cart->getItemAmount()->getDiscountedAmount());
+        $this->assertEquals(2500, $cart->getItemAmountTotal()->getDiscounts());
+        $this->assertEquals(0, $cart->getItemAmountTotal()->getDiscountedAmount());
 
         $cartItem = $cart->findItem($this->sellable, 'item-0');
-        $this->assertEquals(2500, $cartItem->getAmount()->getDiscounts());
-        $this->assertEquals(0, $cartItem->getAmount()->getDiscountedAmount());
+        $this->assertEquals(2500, $cartItem->getAmountEach()->getDiscounts());
+        $this->assertEquals(0, $cartItem->getAmountEach()->getDiscountedAmount());
     }
 
     /** @test */
@@ -238,12 +238,12 @@ class CalculateAdjustmentsTest extends TestCase
         });
 
         $cart = $this->cart;
-        $this->assertEquals(2000, $cart->getItemAmount()->getDiscounts());
-        $this->assertEquals(500, $cart->getItemAmount()->getDiscountedAmount());
+        $this->assertEquals(2000, $cart->getItemAmountTotal()->getDiscounts());
+        $this->assertEquals(500, $cart->getItemAmountTotal()->getDiscountedAmount());
 
         $cartItem = $cart->findItem($this->sellable, 'item-0');
-        $this->assertEquals(2000, $cartItem->getAmount()->getDiscounts());
-        $this->assertEquals(500, $cartItem->getAmount()->getDiscountedAmount());
+        $this->assertEquals(2000, $cartItem->getAmountEach()->getDiscounts());
+        $this->assertEquals(500, $cartItem->getAmountEach()->getDiscountedAmount());
     }
 
     /** @test */
@@ -271,12 +271,12 @@ class CalculateAdjustmentsTest extends TestCase
         });
 
         $cart = $this->cart;
-        $this->assertEquals(1500, $cart->getItemAmount()->getDiscounts());
-        $this->assertEquals(500, $cart->getItemAmount()->getDiscountedAmount());
+        $this->assertEquals(1500, $cart->getItemAmountTotal()->getDiscounts());
+        $this->assertEquals(500, $cart->getItemAmountTotal()->getDiscountedAmount());
 
         $cartItem = $cart->findItem($this->sellable, 'item-0');
-        $this->assertEquals(1500, $cartItem->getAmount()->getDiscounts());
-        $this->assertEquals(500, $cartItem->getAmount()->getDiscountedAmount());
+        $this->assertEquals(1500, $cartItem->getAmountEach()->getDiscounts());
+        $this->assertEquals(500, $cartItem->getAmountEach()->getDiscountedAmount());
     }
 
     /** @test */
@@ -298,12 +298,12 @@ class CalculateAdjustmentsTest extends TestCase
         });
 
         $cart = $this->cart;
-        $this->assertEquals(4000, $cart->getItemAmount()->getDiscounts());
-        $this->assertEquals(1500, $cart->getItemAmount()->getDiscountedAmount());
+        $this->assertEquals(4000, $cart->getItemAmountTotal()->getDiscounts());
+        $this->assertEquals(1500, $cart->getItemAmountTotal()->getDiscountedAmount());
 
         $cartItem = $cart->findItem($this->sellable, 'item-0');
-        $this->assertEquals(4000, $cartItem->getAmount()->getDiscounts());
-        $this->assertEquals(1500, $cartItem->getAmount()->getDiscountedAmount());
+        $this->assertEquals(4000, $cartItem->getAmountEach()->getDiscounts());
+        $this->assertEquals(1500, $cartItem->getAmountEach()->getDiscountedAmount());
     }
 
     /** @test */
@@ -332,12 +332,12 @@ class CalculateAdjustmentsTest extends TestCase
         });
 
         $cart = $this->cart;
-        $this->assertEquals(5000, $cart->getItemAmount()->getDiscounts());
-        $this->assertEquals(500, $cart->getItemAmount()->getDiscountedAmount());
+        $this->assertEquals(5000, $cart->getItemAmountTotal()->getDiscounts());
+        $this->assertEquals(500, $cart->getItemAmountTotal()->getDiscountedAmount());
 
         $cartItem = $cart->findItem($this->sellable, 'item-0');
-        $this->assertEquals(5000, $cartItem->getAmount()->getDiscounts());
-        $this->assertEquals(500, $cartItem->getAmount()->getDiscountedAmount());
+        $this->assertEquals(5000, $cartItem->getAmountEach()->getDiscounts());
+        $this->assertEquals(500, $cartItem->getAmountEach()->getDiscountedAmount());
     }
 
     private function addCartItems(array $items): Cart
