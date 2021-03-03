@@ -339,6 +339,8 @@ class DiscountModelTest extends TestCase
         ]);
 
         $cart = Cart::factory()->create();
+        $codes = Discount::getCodesForCart($cart);
+        $this->assertCount(0, $codes);
 
         $orderCode->applyToCart($cart);
         $participantCode->applyToCart($cart);
@@ -346,6 +348,7 @@ class DiscountModelTest extends TestCase
         $codes = Discount::getCodesForCart($cart);
 
         $this->assertCount(2, $codes);
-        $this->assertEquals(['CODE1', 'CODE2'], $codes);
+        $this->assertEquals('CODE1', $codes[0]->code);
+        $this->assertEquals('CODE2', $codes[1]->code);
     }
 }
