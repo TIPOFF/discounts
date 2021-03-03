@@ -5,16 +5,15 @@ declare(strict_types=1);
 namespace Tipoff\Discounts\Models;
 
 use Assert\Assert;
-use Brick\Money\Money;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use Tipoff\Checkout\Contracts\Models\CartDeduction;
-use Tipoff\Checkout\Contracts\Models\CartInterface;
-use Tipoff\Checkout\Contracts\Models\DiscountInterface;
 use Tipoff\Checkout\Models\Cart;
 use Tipoff\Checkout\Models\Order;
 use Tipoff\Discounts\Exceptions\UnsupportedDiscountTypeException;
+use Tipoff\Discounts\Services\Discount\CalculateAdjustments;
 use Tipoff\Support\Casts\Enum;
+use Tipoff\Support\Contracts\Checkout\CartInterface;
+use Tipoff\Support\Contracts\Checkout\Discounts\DiscountInterface;
 use Tipoff\Support\Enums\AppliesTo;
 use Tipoff\Support\Models\BaseModel;
 use Tipoff\Support\Traits\HasCreator;
@@ -44,7 +43,7 @@ class Discount extends BaseModel implements DiscountInterface
     protected $casts = [
         'id' => 'integer',
         'name' => 'string',
-        'code' => 'string', // TODO - use custom class to represent DiscountCode?
+        'code' => 'string',
         'amount' => 'integer',
         'percent' => 'float',
         'applies_to' => Enum::class.':'.AppliesTo::class,
@@ -61,9 +60,7 @@ class Discount extends BaseModel implements DiscountInterface
 
         static::saving(function (Discount $discount) {
             $discount->code = strtoupper($discount->code);
-            if (empty($discount->max_usage)) {
-                $discount->max_usage = 1;
-            }
+            $discount->max_usage = $discount->max_usage ?: 1;
 
             Assert::lazy()
                 ->that(strlen($discount->code), 'code')->notEq(9)
@@ -72,6 +69,22 @@ class Discount extends BaseModel implements DiscountInterface
                 ->verifyNow();
         });
     }
+
+    //region RELATIONSHIPS
+
+    public function carts()
+    {
+        return $this->belongsToMany(Cart::class)->withTimestamps();
+    }
+
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class);
+    }
+
+    //endregion
+
+    //region SCOPES
 
     /**
      * Scope discounts to valid ones.
@@ -91,10 +104,22 @@ class Discount extends BaseModel implements DiscountInterface
         return $this->scopeValidAt($query, new Carbon('now'));
     }
 
-    public function scopeByCartId(Builder $query, int $cartId): Builder
+    public function scopeIsActiveAutoApply(Builder $query): Builder
     {
-        return $query->whereHas('carts', function ($q) use ($cartId) {
-            $q->where('id', $cartId);
+        return $this->scopeAvailable($query)->where('auto_apply', '=', true);
+    }
+
+    public function scopeByCartId(Builder $query, int $cartId, bool $autoApply = false): Builder
+    {
+        return $query->where(function (Builder $query) use ($cartId, $autoApply) {
+            $query->whereHas('carts', function ($q) use ($cartId) {
+                $q->where('id', $cartId);
+            });
+            if ($autoApply) {
+                $query->orWhere(function (Builder $query) {
+                    $query->isActiveAutoApply();
+                });
+            }
         });
     }
 
@@ -104,6 +129,8 @@ class Discount extends BaseModel implements DiscountInterface
             $q->where('id', $orderId);
         });
     }
+
+    //endregion
 
     /**
      * Validate is current discount is available at specified date.
@@ -124,52 +151,16 @@ class Discount extends BaseModel implements DiscountInterface
         return true;
     }
 
-    public function carts()
-    {
-        return $this->belongsToMany(Cart::class)->withTimestamps();
-    }
+    //region INTERFACE
 
-    public function orders()
-    {
-        return $this->belongsToMany(Order::class);
-    }
-
-    /******************************
-     * DiscountInterface Implementation
-     ******************************/
-
-    public static function findDeductionByCode(string $code): ?CartDeduction
+    public static function findByCode(string $code)
     {
         return Discount::query()->available()->where('code', $code)->first();
     }
 
-    public static function calculateCartDeduction(CartInterface $cart): Money
+    public static function calculateAdjustments(CartInterface $cart): void
     {
-        $discounts = Discount::query()->byCartId($cart->getId())->get();
-
-        return $discounts->reduce(function (Money $total, Discount $discount) use ($cart) {
-            $amount = Money::ofMinor($discount->amount, 'USD');
-
-            if ($amount->isPositive()) {
-                switch ($discount->applies_to) {
-                    case AppliesTo::ORDER():
-                        $total = $total->plus($amount);
-
-                        break;
-                    case AppliesTo::PARTICIPANT():
-                        $total = $total->plus($amount->multipliedBy($cart->getTotalParticipants()));
-
-                        break;
-                }
-            }
-
-            return $total;
-        }, Money::ofMinor(0, 'USD'));
-    }
-
-    public static function markCartDeductionsAsUsed(CartInterface $cart): void
-    {
-        // Does not apply to discount codes
+        app(CalculateAdjustments::class)($cart);
     }
 
     public static function getCodesForCart(CartInterface $cart): array
@@ -183,9 +174,22 @@ class Discount extends BaseModel implements DiscountInterface
         if (in_array($this->applies_to->getValue(), array_keys(config('discounts.applications')))) {
             $this->carts()->syncWithoutDetaching([$cart->getId()]);
 
-            return;
+            return $this;
         }
 
         throw new UnsupportedDiscountTypeException($this->applies_to);
     }
+
+    public function removeFromCart(CartInterface $cart)
+    {
+        $this->carts()->detach($this->id);
+
+        return $this;
+    }
+
+    //endregion
+
+    //region PROTECTED HELPERS
+
+    //endregion
 }

@@ -46,21 +46,21 @@ class DiscountFactory extends Factory
         ];
     }
 
-    public function percent(): self
+    public function percent(?int $percent = null): self
     {
-        return $this->state(function (array $attributes) {
+        return $this->state(function (array $attributes) use ($percent) {
             return [
                 'amount'  => null,
-                'percent' => $this->faker->numberBetween(1, 50),
+                'percent' => $percent ?: $this->faker->numberBetween(1, 50),
             ];
         });
     }
 
-    public function amount(): self
+    public function amount(?int $amount = null): self
     {
-        return $this->state(function (array $attributes) {
+        return $this->state(function (array $attributes) use ($amount) {
             return [
-                'amount'  => $this->faker->numberBetween(100, 1000),
+                'amount'  => $amount ?: $this->faker->numberBetween(100, 1000),
                 'percent' => null,
             ];
         });
@@ -73,6 +73,15 @@ class DiscountFactory extends Factory
                 'expires_at' => $isExpired
                     ? $this->faker->dateTimeBetween($startDate = '-2 months', $endDate = '-1 month', $timezone = null)
                     : $this->faker->dateTimeBetween($startDate = '1 month', $endDate = '2 months', $timezone = null),
+            ];
+        });
+    }
+
+    public function autoApply(bool $isAutoApply = true): self
+    {
+        return $this->state(function (array $attributes) use ($isAutoApply) {
+            return [
+                'auto_apply' => $isAutoApply,
             ];
         });
     }
