@@ -11,9 +11,11 @@ use Tipoff\Checkout\Models\Cart;
 use Tipoff\Checkout\Models\Order;
 use Tipoff\Discounts\Exceptions\UnsupportedDiscountTypeException;
 use Tipoff\Discounts\Services\Discount\CalculateAdjustments;
+use Tipoff\Discounts\Transformers\DiscountTransformer;
 use Tipoff\Support\Casts\Enum;
 use Tipoff\Support\Contracts\Checkout\CartInterface;
 use Tipoff\Support\Contracts\Checkout\Discounts\DiscountInterface;
+use Tipoff\Support\Contracts\Checkout\OrderInterface;
 use Tipoff\Support\Enums\AppliesTo;
 use Tipoff\Support\Models\BaseModel;
 use Tipoff\Support\Traits\HasCreator;
@@ -165,7 +167,22 @@ class Discount extends BaseModel implements DiscountInterface
 
     public static function getCodesForCart(CartInterface $cart): array
     {
-        return Discount::query()->byCartId($cart->getId())->pluck('code')->toArray();
+        return Discount::query()->byCartId($cart->getId())->get()->all();
+    }
+
+    public static function getCodesForOrder(OrderInterface $order): array
+    {
+        return Discount::query()->byOrderId($order->getId())->get()->all();
+    }
+
+    public function getTransformer($context = null)
+    {
+        return new DiscountTransformer();
+    }
+
+    public function getViewComponent($context = null)
+    {
+        return 'tipoff-discount';
     }
 
     public function getCode()

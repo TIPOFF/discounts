@@ -7,6 +7,7 @@ namespace Tipoff\Discounts;
 use Tipoff\Discounts\Listeners\OrderCreatedListener;
 use Tipoff\Discounts\Models\Discount;
 use Tipoff\Discounts\Policies\DiscountPolicy;
+use Tipoff\Discounts\View\Components\DiscountComponent;
 use Tipoff\Support\Contracts\Checkout\Discounts\DiscountInterface;
 use Tipoff\Support\Events\Checkout\OrderCreated;
 use Tipoff\Support\TipoffPackage;
@@ -34,7 +35,11 @@ class DiscountsServiceProvider extends TipoffServiceProvider
                     OrderCreatedListener::class,
                 ],
             ])
+            ->hasBladeComponents([
+                'discount' => DiscountComponent::class,
+            ])
             ->name('discounts')
+            ->hasViews()
             ->hasConfigFile();
     }
 }

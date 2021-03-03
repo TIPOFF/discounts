@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Tipoff\Discounts\Tests;
 
 use Laravel\Nova\NovaCoreServiceProvider;
+use Spatie\Fractal\FractalServiceProvider;
 use Spatie\Permission\PermissionServiceProvider;
 use Tipoff\Authorization\AuthorizationServiceProvider;
 use Tipoff\Checkout\CheckoutServiceProvider;
 use Tipoff\Discounts\DiscountsServiceProvider;
-use Tipoff\Discounts\Tests\Support\Models;
 use Tipoff\Discounts\Tests\Support\Providers\NovaPackageServiceProvider;
 use Tipoff\Support\SupportServiceProvider;
 use Tipoff\TestSupport\BaseTestCase;
@@ -26,16 +26,7 @@ class TestCase extends BaseTestCase
             PermissionServiceProvider::class,
             CheckoutServiceProvider::class,
             DiscountsServiceProvider::class,
+            FractalServiceProvider::class,
         ];
-    }
-
-    /**
-     * @param \Illuminate\Foundation\Application $app
-     */
-    public function getEnvironmentSetUp($app)
-    {
-        $app['config']->set('tipoff.model_class.cart', Models\Cart::class);
-
-        parent::getEnvironmentSetUp($app);
     }
 }
