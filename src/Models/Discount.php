@@ -168,6 +168,16 @@ class Discount extends BaseModel implements DiscountInterface
         return Discount::query()->byCartId($cart->getId())->pluck('code')->toArray();
     }
 
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    public function getAmount()
+    {
+        return $this->amount;
+    }
+
     public function applyToCart(CartInterface $cart)
     {
         // Check for supported discount type
