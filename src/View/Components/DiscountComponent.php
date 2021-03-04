@@ -21,7 +21,7 @@ class DiscountComponent extends BaseDeductionComponent
     public function render()
     {
         /** @var View $view */
-        $view = view('components.discount');
+        $view = view('discounts::components.discount');
 
         return $view;
     }
