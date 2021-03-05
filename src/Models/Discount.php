@@ -182,7 +182,7 @@ class Discount extends BaseModel implements DiscountInterface
 
     public function getViewComponent($context = null)
     {
-        return 'tipoff-discount';
+        return implode('-', ['tipoff', 'discount', $context]);
     }
 
     public function getCode()
