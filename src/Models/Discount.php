@@ -97,8 +97,10 @@ class Discount extends BaseModel implements DiscountInterface
      */
     public function scopeValidAt(Builder $query, $date): Builder
     {
-        return $query
-            ->whereDate('expires_at', '>=', $date);
+        return $query->where(function (Builder $q) use ($date) {
+            $q->whereDate('expires_at', '>=', $date);
+            $q->orWhereNull('expires_at');
+        });
     }
 
     public function scopeAvailable(Builder $query): Builder
