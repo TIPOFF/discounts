@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tipoff\Discounts\Tests\Unit\View\Components;
+namespace Tipoff\Discounts\Tests\Unit\View\Components\Order;
 
 use Tipoff\Discounts\Models\Discount;
 use Tipoff\Discounts\Tests\TestCase;
@@ -15,7 +15,7 @@ class DiscountComponentTest extends TestCase
         $discount = Discount::factory()->amount(1234)->create();
 
         $view = $this->blade(
-            '<x-tipoff-cart-deductions :deductions="$deductions" />',
+            '<x-tipoff-order-deductions :deductions="$deductions" />',
             ['deductions' => [
                 $discount,
             ]]
@@ -32,7 +32,7 @@ class DiscountComponentTest extends TestCase
         $discount2 = Discount::factory()->amount(234)->create();
 
         $view = $this->blade(
-            '<x-tipoff-cart-deductions :deductions="$deductions" />',
+            '<x-tipoff-order-deductions :deductions="$deductions" />',
             ['deductions' => [
                 $discount1,
                 $discount2,
