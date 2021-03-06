@@ -16,3 +16,7 @@ All notable changes to `discounts` will be documented in this file.
 - model policies
 - model interfaces
 - nova resources
+
+## 2.1.0 - 2021-03-06
+
+- view components
