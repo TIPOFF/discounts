@@ -20,3 +20,7 @@ All notable changes to `discounts` will be documented in this file.
 ## 2.1.0 - 2021-03-06
 
 - view components
+
+## 2.1.1 - 2021-03-08
+
+- nova enum field
