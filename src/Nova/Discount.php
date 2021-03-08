@@ -11,7 +11,6 @@ use Laravel\Nova\Fields\Date;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
-use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Panel;
@@ -19,7 +18,6 @@ use Tipoff\Discounts\Rules\DiscountCode;
 use Tipoff\Support\Enums\AppliesTo;
 use Tipoff\Support\Nova\BaseResource;
 use Tipoff\Support\Nova\Filters\EnumFilter;
-use Tipoff\Support\Rules\Enum;
 
 class Discount extends BaseResource
 {

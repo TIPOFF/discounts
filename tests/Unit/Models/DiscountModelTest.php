@@ -284,7 +284,6 @@ class DiscountModelTest extends TestCase
         $this->assertEquals($discount->id, $result->getId());
     }
 
-
     /** @test */
     public function apply_code_to_cart()
     {
