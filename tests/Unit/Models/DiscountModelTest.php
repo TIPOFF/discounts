@@ -270,6 +270,22 @@ class DiscountModelTest extends TestCase
     }
 
     /** @test */
+    public function find_valid_code_null_expiration()
+    {
+        /** @var Discount $discount */
+        $discount = Discount::factory()->amount(1000)->create([
+            'code' => 'TESTCODE',
+            'applies_to' => AppliesTo::ORDER(),
+            'expires_at' => null,
+        ]);
+
+        $result = Discount::findByCode('TESTCODE');
+        $this->assertNotNull($result);
+        $this->assertEquals($discount->id, $result->getId());
+    }
+
+
+    /** @test */
     public function apply_code_to_cart()
     {
         /** @var Discount $discount */

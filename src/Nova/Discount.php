@@ -18,6 +18,7 @@ use Laravel\Nova\Panel;
 use Tipoff\Discounts\Rules\DiscountCode;
 use Tipoff\Support\Enums\AppliesTo;
 use Tipoff\Support\Nova\BaseResource;
+use Tipoff\Support\Nova\Filters\EnumFilter;
 use Tipoff\Support\Rules\Enum;
 
 class Discount extends BaseResource
@@ -38,6 +39,13 @@ class Discount extends BaseResource
 
     ];
 
+    public function filters(Request $request)
+    {
+        return array_merge(parent::filters($request), [
+            EnumFilter::make('applies_to', AppliesTo::class),
+        ]);
+    }
+
     public function fieldsForIndex(NovaRequest $request)
     {
         return array_filter([
@@ -47,6 +55,8 @@ class Discount extends BaseResource
             Currency::make('Amount')->asMinorUnits()->sortable(),
             Number::make('Percent')->sortable(),
             Number::make('Max Usage')->sortable(),
+            \Tipoff\Support\Nova\Fields\Enum::make('Applies To')
+                ->attach(AppliesTo::class),
             Date::make('Expires At', 'expires_at')->sortable(),
         ]);
     }
@@ -70,11 +80,8 @@ class Discount extends BaseResource
             Number::make('Percent')
                 ->rules('required_without:amount')
                 ->nullable(),
-            Select::make('Applies To')
-                ->options(
-                    config('discounts.applications')
-                )
-                ->rules([new Enum(AppliesTo::class)])
+            \Tipoff\Support\Nova\Fields\Enum::make('Applies To')
+                ->attach(AppliesTo::class)
                 ->required(),
             Number::make('Max Usage')
                 ->rules(['integer', 'min:1'])
