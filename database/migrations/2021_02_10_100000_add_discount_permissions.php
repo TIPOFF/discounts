@@ -9,9 +9,9 @@ class AddDiscountPermissions extends BasePermissionsMigration
     public function up()
     {
         $permissions = [
-            'view discounts',
-            'create discounts',
-            'update discounts'
+            'view discounts' => ['Owner', 'Staff'],
+            'create discounts' => ['Owner'],
+            'update discounts' => ['Owner']
         ];
 
         $this->createPermissions($permissions);
