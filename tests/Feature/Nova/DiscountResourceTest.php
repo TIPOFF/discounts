@@ -13,11 +13,13 @@ class DiscountResourceTest extends TestCase
 {
     use DatabaseTransactions;
 
+    private const NOVA_ROUTE = 'nova-api/discounts';
+
     /**
      * @dataProvider dataProviderForShowByRole
      * @test
      */
-    public function index_by_role(?string $role, bool $hasAccess)
+    public function index_by_role(?string $role, bool $hasAccess, bool $canIndex)
     {
         Discount::factory()->count(4)->create();
 
@@ -27,11 +29,11 @@ class DiscountResourceTest extends TestCase
         }
         $this->actingAs($user);
 
-        $response = $this->getJson('nova-api/discounts')
+        $response = $this->getJson(self::NOVA_ROUTE)
             ->assertStatus($hasAccess ? 200 : 403);
 
         if ($hasAccess) {
-            $this->assertCount(4, $response->json('resources'));
+            $this->assertCount($canIndex ? 4 : 0, $response->json('resources'));
         }
     }
 
@@ -39,9 +41,9 @@ class DiscountResourceTest extends TestCase
      * @dataProvider dataProviderForShowByRole
      * @test
      */
-    public function show_by_role(?string $role, bool $hasAccess)
+    public function show_by_role(?string $role, bool $hasAccess, bool $canView)
     {
-        $discount = Discount::factory()->create();
+        $model = Discount::factory()->create();
 
         $user = User::factory()->create();
         if ($role) {
@@ -49,24 +51,24 @@ class DiscountResourceTest extends TestCase
         }
         $this->actingAs($user);
 
-        $response = $this->getJson("nova-api/discounts/{$discount->id}")
+        $response = $this->getJson(self::NOVA_ROUTE . "/{$model->id}")
             ->assertStatus($hasAccess ? 200 : 403);
 
-        if ($hasAccess) {
-            $this->assertEquals($discount->id, $response->json('resource.id.value'));
+        if ($hasAccess && $canView) {
+            $this->assertEquals($model->id, $response->json('resource.id.value'));
         }
     }
 
     public function dataProviderForShowByRole()
     {
         return [
-            'Admin' => ['Admin', true],
-            'Owner' => ['Owner', true],
-            'Executive' => ['Executive', true],
-            'Staff' => ['Staff', true],
-            'Former Staff' => ['Former Staff', false],
-            'Customer' => ['Customer', false],
-            'No Role' => [null, false],
+            'Admin' => ['Admin', true, true],
+            'Owner' => ['Owner', true, true],
+            'Executive' => ['Executive', true, true],
+            'Staff' => ['Staff', true, true],
+            'Former Staff' => ['Former Staff', false, false],
+            'Customer' => ['Customer', false, false],
+            'No Role' => [null, false, false],
         ];
     }
 
@@ -76,7 +78,7 @@ class DiscountResourceTest extends TestCase
      */
     public function delete_by_role(?string $role, bool $hasAccess, bool $canDelete)
     {
-        $discount = Discount::factory()->create();
+        $model = Discount::factory()->create();
 
         $user = User::factory()->create();
         if ($role) {
@@ -85,7 +87,7 @@ class DiscountResourceTest extends TestCase
         $this->actingAs($user);
 
         // Request never fails
-        $this->deleteJson("nova-api/discounts?resources[]={$discount->id}")
+        $this->deleteJson(self::NOVA_ROUTE . "?resources[]={$model->id}")
             ->assertStatus($hasAccess ? 200 : 403);
 
         // But deletion will only occur if user has permissions
