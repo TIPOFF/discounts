@@ -16,7 +16,7 @@ class DiscountResourceTest extends TestCase
     private const NOVA_ROUTE = 'nova-api/discounts';
 
     /**
-     * @dataProvider dataProviderForShowByRole
+     * @dataProvider dataProviderForIndexByRole
      * @test
      */
     public function index_by_role(?string $role, bool $hasAccess, bool $canIndex)
@@ -35,6 +35,19 @@ class DiscountResourceTest extends TestCase
         if ($hasAccess) {
             $this->assertCount($canIndex ? 4 : 0, $response->json('resources'));
         }
+    }
+
+    public function dataProviderForIndexByRole()
+    {
+        return [
+            'Admin' => ['Admin', true, true],
+            'Owner' => ['Owner', true, true],
+            'Executive' => ['Executive', true, true],
+            'Staff' => ['Staff', true, true],
+            'Former Staff' => ['Former Staff', false, false],
+            'Customer' => ['Customer', false, false],
+            'No Role' => [null, false, false],
+        ];
     }
 
     /**
