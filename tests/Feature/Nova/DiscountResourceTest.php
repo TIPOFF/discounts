@@ -62,7 +62,6 @@ class DiscountResourceTest extends TestCase
             'Staff' => ['Staff', true],
             'Former Staff' => ['Former Staff', false],
             'Customer' => ['Customer', false],
-            'Participant' => ['Participant', false],
             'No Role' => [null, false],
         ];
     }
@@ -98,7 +97,6 @@ class DiscountResourceTest extends TestCase
             'Staff' => ['Staff', true, false],
             'Former Staff' => ['Former Staff', false, false],
             'Customer' => ['Customer', false, false],
-            'Participant' => ['Participant', false, false],
             'No Role' => [null, false, false],
         ];
     }
