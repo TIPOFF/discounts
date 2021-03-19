@@ -49,8 +49,12 @@ class DiscountResourceTest extends TestCase
         }
         $this->actingAs($user);
 
-        $this->getJson("nova-api/discounts/{$discount->id}")
+        $response = $this->getJson("nova-api/discounts/{$discount->id}")
             ->assertStatus($hasAccess ? 200 : 403);
+
+        if ($hasAccess) {
+            $this->assertEquals($discount->id, $response->json('resource.id.value'));
+        }
     }
 
     public function dataProviderForShowByRole()
