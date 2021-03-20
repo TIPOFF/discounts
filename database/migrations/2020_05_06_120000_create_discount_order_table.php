@@ -12,7 +12,7 @@ class CreateDiscountOrderTable extends Migration
     public function up()
     {
         Schema::create('discount_order', function (Blueprint $table) {
-            $table->foreignIdFor(Discount::class);
+            $table->foreignIdFor(app('discount'));
             $table->foreignIdFor(app('order'));
             $table->timestamps();
         });
