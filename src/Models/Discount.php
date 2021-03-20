@@ -7,8 +7,6 @@ namespace Tipoff\Discounts\Models;
 use Assert\Assert;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use Tipoff\Checkout\Models\Cart;
-use Tipoff\Checkout\Models\Order;
 use Tipoff\Discounts\Exceptions\UnsupportedDiscountTypeException;
 use Tipoff\Discounts\Services\Discount\CalculateAdjustments;
 use Tipoff\Discounts\Transformers\DiscountTransformer;
