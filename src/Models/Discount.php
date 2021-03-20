@@ -7,8 +7,6 @@ namespace Tipoff\Discounts\Models;
 use Assert\Assert;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use Tipoff\Checkout\Models\Cart;
-use Tipoff\Checkout\Models\Order;
 use Tipoff\Discounts\Exceptions\UnsupportedDiscountTypeException;
 use Tipoff\Discounts\Services\Discount\CalculateAdjustments;
 use Tipoff\Discounts\Transformers\DiscountTransformer;
@@ -76,12 +74,12 @@ class Discount extends BaseModel implements DiscountInterface
 
     public function carts()
     {
-        return $this->belongsToMany(Cart::class)->withTimestamps();
+        return $this->belongsToMany(app('cart'))->withTimestamps();
     }
 
     public function orders()
     {
-        return $this->belongsToMany(Order::class);
+        return $this->belongsToMany(app('order'));
     }
 
     //endregion
