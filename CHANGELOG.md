@@ -24,3 +24,7 @@ All notable changes to `discounts` will be documented in this file.
 ## 2.1.1 - 2021-03-08
 
 - nova enum field
+
+## 2.2.0 - 2021-04-11
+
+- bump package dependencies
