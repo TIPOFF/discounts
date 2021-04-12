@@ -13,13 +13,13 @@ use Spatie\Permission\PermissionServiceProvider;
 use Tipoff\Addresses\AddressesServiceProvider;
 use Tipoff\Authorization\AuthorizationServiceProvider;
 use Tipoff\Checkout\CheckoutServiceProvider;
+use Tipoff\Discounts\DiscountsServiceProvider;
 use Tipoff\Locations\LocationsServiceProvider;
 use Tipoff\Seo\SeoServiceProvider;
 use Tipoff\Statuses\StatusesServiceProvider;
 use Tipoff\Support\SupportServiceProvider;
 use Tipoff\TestSupport\BaseTestCase;
 use Tipoff\TestSupport\Providers\NovaPackageServiceProvider;
-use Tipoff\Discounts\DiscountsServiceProvider;
 
 class TestCase extends BaseTestCase
 {
