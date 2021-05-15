@@ -18,7 +18,7 @@
         "php": "^7.4|^8.0",
         "tipoff/authorization": "^2.8.6",
         "tipoff/checkout": "^2.7.2",
-        "tipoff/support": "^2.1.5"
+        "tipoff/support": "^2.1.6"
     },
     "require-dev": {
         "tipoff/test-support": "^2.0.1"
