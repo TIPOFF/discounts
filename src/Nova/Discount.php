@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tipoff\Discounts\Nova;
 
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\Currency;
 use Laravel\Nova\Fields\Date;
-use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
@@ -62,9 +62,11 @@ class Discount extends BaseResource
     public function fields(Request $request)
     {
         return array_filter([
-            Text::make('Name'),
+            Text::make('Name')->rules('required'),
             Text::make('Code')
-                ->rules([new DiscountCode()]),
+                ->rules([new DiscountCode(), 'required'])
+                ->creationRules('unique:discounts,code')
+                ->updateRules('unique:discounts,code,{{resourceId}}'),
             Currency::make('Amount')->asMinorUnits()
                 ->step('0.01')
                 ->resolveUsing(function ($value) {
@@ -73,21 +75,27 @@ class Discount extends BaseResource
                 ->fillUsing(function ($request, $model, $attribute) {
                     $model->$attribute = $request->$attribute * 100;
                 })
-                ->rules('required_without:percent')
-                ->nullable(),
+                ->rules(function () {
+                    return [
+                        'required_if:percent,null,0',
+                    ];
+                }),
             Number::make('Percent')
-                ->rules('required_without:amount')
-                ->nullable(),
+                ->rules(function () {
+                    return [
+                        'required_if:amount,null,0',
+                    ];
+                }),
             \Tipoff\Support\Nova\Fields\Enum::make('Applies To')
                 ->attach(AppliesTo::class)
-                ->required(),
+                ->rules('required'),
             Number::make('Max Usage')
-                ->rules(['integer', 'min:1'])
+                ->rules(['integer', 'min:1', 'required'])
                 ->nullable(),
             Boolean::make('Auto Apply'),
             Date::make('Expires At', 'expires_at')->nullable(),
 
-            nova('order') ? HasMany::make('Orders', 'orders', nova('order')) : null,
+            nova('order') ? BelongsToMany::make('Orders', 'orders', nova('order')) : null,
 
             new Panel('Data Fields', $this->dataFields()),
         ]);
@@ -100,5 +108,26 @@ class Discount extends BaseResource
             $this->creatorDataFields(),
             $this->updaterDataFields(),
         );
+    }
+
+    protected static function afterValidation(NovaRequest $request, $validator)
+    {
+        $percent = $request->post('percent');
+        $amount = $request->post('amount');
+
+        if (! empty($amount) && ! empty($percent)) {
+            $validator
+                ->errors()
+                ->add(
+                    'amount',
+                    'A fee cannot have both an amount & percent.'
+                );
+            $validator
+                ->errors()
+                ->add(
+                    'percent',
+                    'A fee cannot have both an amount & percent.'
+                );
+        }
     }
 }
